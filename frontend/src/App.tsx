@@ -1,13 +1,16 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { router } from "./configs/routes";
 
 function App() {
-
   return (
-    <>
-    
-      <h1 className='text-red-600'>Vite + eact</h1>
-     
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        {router.map((item) => (
+          <Route key={item.path} element={item.element} path={item.path} />
+        ))}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
