@@ -5,7 +5,11 @@ export default {
     fontFamily: {
       sans: ['Inter', 'sans-serif'],
     },
-    extend: {},
+    extend: {
+      colors: {
+        "background": "#D9D9D9"
+      }
+    },
   },
   plugins: [],
 }

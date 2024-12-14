@@ -18,6 +18,29 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
 } 
+
+@layer base {
+  h1 {
+    @apply text-4xl font-semibold; /* Tailwind classes for 64px, bold */
+    font-size: 64px;
+  }
+  h2 {
+    @apply text-3xl font-semibold; /* Tailwind classes for 48px, bold */
+    font-size: 48px;
+  }
+  h3 {
+    @apply text-2xl font-semibold; /* Tailwind classes for 36px, bold */
+    font-size: 36px;
+  }
+  h4 {
+    @apply text-xl font-semibold; /* Tailwind classes for 32px, bold */
+    font-size: 32px;
+  }
+  p {
+    @apply text-lg; /* Tailwind class for 24px */
+    font-size: 24px;
+  }
+}
 /* 
 a {
   font-weight: 500;
