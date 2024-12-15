@@ -7,6 +7,7 @@ import (
 	"sandbox-skeleton/common/fiber/middleware"
 	"sandbox-skeleton/endpoint"
 	profileEndpoint "sandbox-skeleton/endpoint/profile"
+	projectEndpoint "sandbox-skeleton/endpoint/project"
 	"sandbox-skeleton/endpoint/public"
 	"sandbox-skeleton/endpoint/sample"
 
@@ -23,6 +24,7 @@ func main() {
 			sampleEndpoint.Handle,
 			publicEndpoint.Handle,
 			profileEndpoint.Handle,
+			projectEndpoint.Handle,
 		),
 		fx.Invoke(
 			endpoint.Bind,
