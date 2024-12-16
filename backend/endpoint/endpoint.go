@@ -9,9 +9,11 @@ import (
 	"sandbox-skeleton/type/response"
 
 	"github.com/gofiber/fiber/v2"
+
+	"sandbox-skeleton/endpoint/server"
 )
 
-func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *sampleEndpoint.Handler, publicHandler *publicEndpoint.Handler, profileHandler *profileEndpoint.Handler, projectHandler *projectEndpoint.Handler) {
+func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *sampleEndpoint.Handler, publicHandler *publicEndpoint.Handler, profileHandler *profileEndpoint.Handler, projectHandler *projectEndpoint.Handler, serverHandler *serverEndpoint.Handler) {
 	// * root
 	app.Get("/", HandleRoot)
 
@@ -34,6 +36,11 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 
 	projectGroup := api.Group("project", middleware.Jwt())
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
+
+	// * server group
+	serverGroup := api.Group("server", middleware.Jwt())
+	serverGroup.Post("create", serverHandler.HandleCreateServer)
+
 	// * not found
 	app.Use(HandleNotFound)
 }
