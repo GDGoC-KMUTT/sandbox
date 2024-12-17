@@ -9,6 +9,7 @@ type User struct {
 	Lastname  *string    `gorm:"type:VARCHAR(255); not null"`
 	Email     *string    `gorm:"type:VARCHAR(255); index:idx_user_email,unique; not null"`
 	PhotoUrl  *string    `gorm:"type:TEXT; null"`
+	Projects  []Project  `gorm:"many2many:user_projects;" json:"projects"`
 	CreatedAt *time.Time `gorm:"not null"`
 	UpdatedAt *time.Time `gorm:"not null"`
 }

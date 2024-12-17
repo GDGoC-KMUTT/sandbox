@@ -7,8 +7,10 @@ import (
 	"sandbox-skeleton/common/fiber/middleware"
 	"sandbox-skeleton/endpoint"
 	profileEndpoint "sandbox-skeleton/endpoint/profile"
+	projectEndpoint "sandbox-skeleton/endpoint/project"
 	"sandbox-skeleton/endpoint/public"
 	"sandbox-skeleton/endpoint/sample"
+	serverEndpoint "sandbox-skeleton/endpoint/server"
 
 	"go.uber.org/fx"
 )
@@ -23,6 +25,8 @@ func main() {
 			sampleEndpoint.Handle,
 			publicEndpoint.Handle,
 			profileEndpoint.Handle,
+			projectEndpoint.Handle,
+			serverEndpoint.Handle,
 		),
 		fx.Invoke(
 			endpoint.Bind,
