@@ -1,7 +1,13 @@
+import { useState } from "react"
+import CreateProjectModal from "../../components/modal/CreateProjectModal.tsx"
 import ProjectCard from "../../components/project/ProjectCard.tsx"
 import MainLayout from "../../layouts/MainLayout"
 
-const index = () => {
+const Project = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const handleCreateProject = (name: string, description: string) => {
+        console.log("Project Created:", { name, description })
+    }
     const project = {
         id: 1,
         name: "Etalert",
@@ -22,7 +28,8 @@ const index = () => {
     const headerContent = (
         <>
             <h2>Project</h2>
-            <button>+ New</button>
+            <button onClick={() => setIsModalOpen(true)}>+ New</button>
+            <CreateProjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onCreate={handleCreateProject} />
         </>
     )
 
@@ -35,4 +42,5 @@ const index = () => {
     return <MainLayout headerContent={headerContent} bodyContent={bodyContent} />
 }
 
-export default index
+export default Project
+
