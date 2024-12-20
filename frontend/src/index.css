@@ -1,97 +1,130 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, sans-serif;
-  /* line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87); 
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; */
-} 
-
-@layer base {
-  h1 {
-    @apply text-4xl font-semibold; /* Tailwind classes for 64px, bold */
-    font-size: 64px;
-  }
-  h2 {
-    @apply text-3xl font-semibold; /* Tailwind classes for 48px, bold */
-    font-size: 48px;
-  }
-  h3 {
-    @apply text-2xl font-semibold; /* Tailwind classes for 36px, bold */
-    font-size: 36px;
-  }
-  h4 {
-    @apply text-xl font-semibold; /* Tailwind classes for 32px, bold */
-    font-size: 32px;
-  }
-  p {
-    @apply text-lg; /* Tailwind class for 24px */
-    font-size: 24px;
-  }
-}
-/* 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    line-height: 1.5;
+    color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-weight: 700; /* Bold */
+}
+
+h2 {
+    font-weight: 500; /* Medium */
+}
+
+p {
+    font-weight: 300; /* Light */
+}
+
+a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
+}
+a:hover {
+    color: #535bf2;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    background-color: hsl(var(--field-type));
+    color: hsl(var(--field-type-foreground));
 }
 button:hover {
-  border-color: #646cff;
+    border-color: hsl(var(--primary));
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */ 
+    :root {
+        color: hsl(var(--foreground));
+        background-color: hsl(var(--page-background));
+    }
+    a:hover {
+        color: #747bff;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color: hsl(var(--foreground));
+        background-color: hsl(var(--page-background));
+    }
+    a:hover {
+        color: #747bff;
+    }
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 208 37% 20%;
+
+        --page-background: 0 0% 98%;
+
+        --primary: 18 100% 75%;
+        --secondary: 20 43% 56%;
+
+        --progress-bar: 137 63% 51%;
+
+        --field-type: 38 100% 85%;
+        --field-type-foreground: 18 51% 52%;
+
+        --form: 0 0% 94%;
+
+        --radius-large: 40px;
+        --radius-medium: 32px;
+        --radius: 24px;
+        --radius-small: 12px;
+    }
+}
+
+@layer utilities {
+    .text-form {
+        color: hsl(var(--foreground));
+    }
+    .border-form {
+        border-color: hsl(var(--form));
+    }
+    .bg-fieldType {
+        background-color: hsl(var(--field-type));
+    }
+    .bg-form {
+        background-color: hsl(var(--form));
+    }
+    .bg-completeStep {
+        background-color: hsl(var(--complete-step));
+    }
+}
