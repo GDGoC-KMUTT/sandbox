@@ -2,19 +2,20 @@ package endpoint
 
 import (
 	"sandbox-skeleton/common/fiber/middleware"
+	domainEndpoint "sandbox-skeleton/endpoint/domain"
 	profileEndpoint "sandbox-skeleton/endpoint/profile"
 	projectEndpoint "sandbox-skeleton/endpoint/project"
 	"sandbox-skeleton/endpoint/public"
 	"sandbox-skeleton/endpoint/sample"
+	serverEndpoint "sandbox-skeleton/endpoint/server"
 	"sandbox-skeleton/type/response"
 
 	"github.com/gofiber/fiber/v2"
-
-	"sandbox-skeleton/endpoint/server"
 )
 
-func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *sampleEndpoint.Handler, publicHandler *publicEndpoint.Handler, profileHandler *profileEndpoint.Handler, projectHandler *projectEndpoint.Handler, serverHandler *serverEndpoint.Handler) {
+func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *sampleEndpoint.Handler, publicHandler *publicEndpoint.Handler, profileHandler *profileEndpoint.Handler, projectHandler *projectEndpoint.Handler, serverHandler *serverEndpoint.Handler, domainHandler *domainEndpoint.Handler) {
 	// * root
+	app.Use("/", middleware.Cors())
 	app.Get("/", HandleRoot)
 
 	// * api
@@ -35,11 +36,21 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	profileGroup.Get("info", profileHandler.HandleInfoGet)
 
 	projectGroup := api.Group("project", middleware.Jwt())
+	projectGroup.Get("list", projectHandler.HandleProjectListGet)
+	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
 
 	// * server group
-	serverGroup := api.Group("server", middleware.Jwt())
+	serverGroup := projectGroup.Group(":projectId/server")
 	serverGroup.Post("create", serverHandler.HandleCreateServer)
+	serverGroup.Get("list", serverHandler.HandleServerListGet)
+	serverGroup.Get(":serverId", serverHandler.HandleServerGet)
+
+	// * domain group
+	domainGroup := projectGroup.Group(":projectId/domain")
+	domainGroup.Get("/list", domainHandler.HandleDomainListGet)
+	domainGroup.Post("/create/dns", domainHandler.HandleCreateDnsRecord)
+	domainGroup.Post("/create/webproxy", domainHandler.HandleCreateWebProxy)
 
 	// * not found
 	app.Use(HandleNotFound)

@@ -6,3 +6,8 @@ type Profile struct {
 	Lastname  *string `json:"lastname"`
 	PhotoUrl  *string `json:"photoUrl"`
 }
+
+type UserAdd struct {
+	Email     *string `json:"email"`
+	ProjectId *uint64 `json:"project_id"`
+}
