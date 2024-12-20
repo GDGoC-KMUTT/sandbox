@@ -39,6 +39,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	projectGroup.Get("list", projectHandler.HandleProjectListGet)
 	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
+	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
 
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")

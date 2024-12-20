@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom"
 import PrivateRoute from "./PrivateRoute"
 import NotFound from "../pages/NotFound"
 import Login from "../../pages/login/Login"
+import Callback from "../../pages/callback/Callback"
 
 const ROUTES: Record<string, any> = import.meta.glob("/src/pages/**/[a-z[]*.tsx", { eager: true })
 
@@ -14,10 +15,11 @@ const routes: RouteObject[] = Object.keys(ROUTES)
             .replace(/\/index$/, "")
             .replace(/\[\.{3}([^\]]+)\]/g, "*")
             .replace(/\[([^\]]+)\]/g, ":$1")
+            .replace("/private", "")
 
         const Element = ROUTES[route].default
 
-        const isPrivate = route.includes("private") // Example: Mark "private" folder as restricted
+        const isPrivate = route.includes("private")
 
         return {
             path,
@@ -25,4 +27,9 @@ const routes: RouteObject[] = Object.keys(ROUTES)
         }
     })
 
-export const router = [...routes, { path: "/login", element: React.createElement(Login) }, { path: "*", element: React.createElement(NotFound) }]
+export const router = [
+    ...routes,
+    { path: "/login", element: React.createElement(Login) },
+    { path: "/callback", element: React.createElement(Callback) },
+    { path: "*", element: React.createElement(NotFound) },
+]

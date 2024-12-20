@@ -2,14 +2,15 @@ package publicEndpoint
 
 import (
 	"context"
-	"github.com/bsthun/gut"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
-	"golang.org/x/oauth2"
 	"sandbox-skeleton/type/common"
 	"sandbox-skeleton/type/payload"
 	"sandbox-skeleton/type/response"
 	"sandbox-skeleton/type/table"
+
+	"github.com/bsthun/gut"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/oauth2"
 )
 
 func (r *Handler) HandleLoginCallback(c *fiber.Ctx) error {
@@ -86,7 +87,13 @@ func (r *Handler) HandleLoginCallback(c *fiber.Ctx) error {
 		Value: signedJwtToken,
 	})
 
-	return c.JSON(response.Success(map[string]string{
+	return c.JSON(response.Success(map[string]interface{}{
 		"token": signedJwtToken,
+		"user": map[string]interface{}{
+			"id":        user.Id,
+			"firstname": user.Firstname,
+			"lastname":  user.Lastname,
+			"photoUrl":  user.PhotoUrl,
+		},
 	}))
 }

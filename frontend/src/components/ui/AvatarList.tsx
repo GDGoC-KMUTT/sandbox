@@ -1,12 +1,9 @@
 import { useState } from "react"
-
-interface IUser {
-    email: string
-    photo: string
-}
+import { UserAvatar } from "../../types/project"
+import avatar from "../../assets/avatar.jpg"
 
 interface AvatarListProps {
-    users: IUser[]
+    users: UserAvatar[]
 }
 
 const AvatarList: React.FC<AvatarListProps> = ({ users }) => {
@@ -21,7 +18,7 @@ const AvatarList: React.FC<AvatarListProps> = ({ users }) => {
             {displayedUsers.map((user, index) => (
                 <div key={index} className="relative" onMouseEnter={() => setHoveredUser(user.email)} onMouseLeave={() => setHoveredUser(null)}>
                     <img
-                        src={user.photo}
+                        src={user.photo_url || avatar}
                         alt={user.email}
                         className={`min-w-[30px] h-[30px] rounded-full object-cover border-2 border-white ${index !== 0 ? "-ml-2" : ""}`}
                     />

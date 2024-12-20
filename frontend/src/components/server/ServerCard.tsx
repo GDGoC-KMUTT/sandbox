@@ -1,17 +1,9 @@
 import { useNavigate } from "react-router-dom"
 import ActiveStatus from "../ui/ActiveStatus"
 import { GlobeAltIcon } from "@heroicons/react/24/outline"
+import { PublicServer } from "../../types/server"
 
-interface IServerCard {
-    id: number
-    hostname: string
-    ip: string
-    status: boolean
-    vcpu: number
-    memory: number
-}
-
-const ServerCard: React.FC<IServerCard> = ({ id, hostname, ip, status, vcpu, memory }) => {
+const ServerCard: React.FC<PublicServer> = ({ id, hostname, ip, v_cpu, memory }) => {
     const navigate = useNavigate()
     return (
         <div className="flex flex-col justify-center gap-[5px] min-w-[300px] min-h-[150px] p-[20px] m-[20px] rounded-2xl bg-background shadow-card">
@@ -23,9 +15,9 @@ const ServerCard: React.FC<IServerCard> = ({ id, hostname, ip, status, vcpu, mem
                 <p>{ip}</p>
             </div>
             <div className="flex gap-2">
-                <ActiveStatus status={status} />
+                <ActiveStatus status={true} />
                 <p>
-                    {vcpu} vCPU / {memory} GB RAM
+                    {v_cpu} vCPU / {memory} GB RAM
                 </p>
             </div>
             <div className={"flex justify-end"}>

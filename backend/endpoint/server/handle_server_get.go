@@ -40,6 +40,7 @@ func (r *Handler) HandleServerGet(c *fiber.Ctx) error {
 	}
 
 	mappedServer := payload.Server{
+		Id:       server.Id,
 		Hostname: server.Hostname,
 		IP:       server.IP,
 		OS:       server.OS,

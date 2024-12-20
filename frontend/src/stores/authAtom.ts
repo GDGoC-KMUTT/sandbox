@@ -6,5 +6,3 @@ export const authAtom = atom<AuthState>({
     user: null,
     loading: true,
 })
-
-export const tokenAtom = atom<string>("")
