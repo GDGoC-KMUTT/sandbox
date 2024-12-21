@@ -61,6 +61,7 @@ func (r *Handler) HandleCreateWebProxy(c *fiber.Ctx) error {
 		ServerId:  serverIdPtr,
 		Service:   &dnsService,
 		ProjectId: &projectIDUint64,
+		Port:      body.Port,
 	}
 
 	// Save the record to the database
