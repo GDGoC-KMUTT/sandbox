@@ -1,19 +1,13 @@
+import { PublicServer } from "./server"
+
 export interface Domain {
     id: number
     hostname: string
     dnstype: string
     target: string
-    server: string
+    service: string
+    server: PublicServer | null
     port: number
-}
-
-export interface PublicDomain {
-    id: number
-    hostname: string
-    dnstype: string
-    target: string
-    server: string
-    // port: number
 }
 
 export interface DomainResponse {
@@ -21,9 +15,9 @@ export interface DomainResponse {
     data: Domain
 }
 
-export interface ServerListResponse {
+export interface DomainsResponse {
     success: boolean
-    data: PublicDomain[]
+    data: Domain[]
 }
 
 export interface CreateDomainPayload {
@@ -41,10 +35,10 @@ export interface CreateDnsRecord {
     target: string
     projectId?: string
 }
+
 export interface CreateWebProxy {
     hostname: string
     server_id: number
     port: number
     projectId?: string
 }
-

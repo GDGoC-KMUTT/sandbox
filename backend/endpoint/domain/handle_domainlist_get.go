@@ -65,6 +65,7 @@ func (r *Handler) HandleDomainListGet(c *fiber.Ctx) error {
 			Target:   domain.Target,
 			Server:   mappedServer,
 			Port:     domain.Port,
+			Service:  domain.Service,
 		})
 	}
 

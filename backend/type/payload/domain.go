@@ -19,4 +19,5 @@ type Domain struct {
 	Target   *string       `json:"target"`
 	Server   *PublicServer `json:"server"`
 	Port     *int          `json:"port"`
+	Service  *string       `json:"service"`
 }

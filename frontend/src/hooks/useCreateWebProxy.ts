@@ -28,4 +28,3 @@ const useCreateWebProxy = () => {
 }
 
 export default useCreateWebProxy
-

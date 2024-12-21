@@ -1,16 +1,18 @@
 import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
 import { CreateServerPayload } from "../../types/server"
+import useCreateServer from "../../hooks/useCreateServer"
+import { useQueryClient } from "@tanstack/react-query"
 
-export interface CreateServerModalProps {
-    isOpen: boolean
+export interface ICreateServerModal {
     onClose: () => void
-    onCreate: (server: CreateServerPayload) => void
-    isLoading: boolean
+    projectId: string
 }
 
-const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, onCreate, isLoading }) => {
+const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId }) => {
+    const { mutate: createServer, isPending } = useCreateServer()
     const [server, setServer] = useState<CreateServerPayload>({ hostname: "", username: "", password: "", os: "Debian", v_cpu: 2, memory: 1 })
+    const queryClient = useQueryClient()
 
     const handleCreate = () => {
         if (
@@ -25,16 +27,33 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
             alert("Please fill in all fields correctly.")
             return
         }
-        onCreate(server)
-        onClose()
+        createServer(
+            {
+                ...server,
+                projectId: projectId,
+            },
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["servers", projectId],
+                    })
+                    onClose()
+                },
+                onError: () => {
+                    alert("Err")
+                    onClose()
+                },
+            }
+        )
     }
+
     const handleInputChange = (key: keyof CreateServerPayload, value: string | number) => {
         setServer((prev) => ({
             ...prev,
             [key]: value,
         }))
     }
-    if (!isOpen) return null
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
             <div className="bg-background rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
@@ -49,7 +68,7 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.hostname}
                         onChange={(e) => handleInputChange("hostname", e.target.value)}
-                        disabled={isLoading}
+                        disabled={isPending}
                     />
                 </div>
                 <div className="mb-4">
@@ -62,7 +81,7 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.username}
                         onChange={(e) => handleInputChange("username", e.target.value)}
-                        disabled={isLoading}
+                        disabled={isPending}
                     />
                 </div>
                 <div className="mb-4">
@@ -75,7 +94,7 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.password}
                         onChange={(e) => handleInputChange("password", e.target.value)}
-                        disabled={isLoading}
+                        disabled={isPending}
                     />
                 </div>
                 <div className="mb-4">
@@ -122,17 +141,16 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
                         />
                     </div>
                 </div>
-
                 <div className="flex justify-end space-x-4">
                     <button
                         className="px-6 py-2 bg-background border-2 border-form hover:bg-form hover:border-form text-foreground"
                         onClick={onClose}
-                        disabled={isLoading}
+                        disabled={isPending}
                     >
                         Cancel
                     </button>
-                    <button className="px-6" onClick={handleCreate} disabled={isLoading}>
-                        {isLoading ? <DotLoading /> : "Create"}
+                    <button className="px-6" onClick={handleCreate} disabled={isPending}>
+                        {isPending ? <DotLoading /> : "Create"}
                     </button>
                 </div>
             </div>

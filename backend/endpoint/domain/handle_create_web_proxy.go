@@ -1,6 +1,7 @@
 package domainEndpoint
 
 import (
+	"fmt"
 	"sandbox-skeleton/type/common"
 	"sandbox-skeleton/type/payload"
 	"sandbox-skeleton/type/response"
@@ -15,6 +16,7 @@ import (
 func (r *Handler) HandleCreateWebProxy(c *fiber.Ctx) error {
 	// Parse web proxy details from the request body
 	body := new(payload.CreateWebProxy)
+
 	if err := c.BodyParser(body); err != nil {
 		return gut.Err(false, "Unable to parse body", err)
 	}

@@ -42,13 +42,8 @@ const Index = () => {
             <ProjectCardLoading />
         </div>
     ) : (
-        <div className="flex flex-wrap">
-            {projects?.data.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-            ))}
-        </div>
+        <div className="flex flex-wrap">{projects?.data.map((project, index) => <ProjectCard key={index} {...project} />)}</div>
     )
-
     return <MainLayout headerContent={headerContent} bodyContent={bodyContent} />
 }
 

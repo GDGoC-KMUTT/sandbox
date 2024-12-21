@@ -1,5 +1,23 @@
 import { PencilIcon } from "@heroicons/react/24/solid"
-const DomainList = () => {
+import useFetchDomains from "../../hooks/useFetchDomains"
+
+interface IDomainList {
+    projectId: string
+}
+
+const ServerTag = ({ hostname }: { hostname: string | null }) => {
+    return <div>{hostname || "No server"}</div>
+}
+
+const DomainList: React.FC<IDomainList> = ({ projectId }) => {
+    const { data: domains, isLoading } = useFetchDomains(projectId)
+
+    if (isLoading) {
+        return <div className={"border"}>Server loading</div>
+    }
+    if (!domains || !domains.data) {
+        return <div>No domains available</div>
+    }
     return (
         <div className="w-full">
             <table className="w-full table-auto">
@@ -12,14 +30,26 @@ const DomainList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td className="px-4 py-2">server</td>
-                        <td className="px-4 py-2">A</td>
-                        <td className="px-4 py-2">10.2.50.6</td>
-                        <td className="flex justify-end p-4 pr-6">
-                            <PencilIcon className="h-[20px]" />
-                        </td>
-                    </tr>
+                    {domains?.data.map((domain, index) => (
+                        <tr key={index}>
+                            <td className="px-4 py-2">{domain.hostname}</td>
+                            <td className="px-4 py-2">{domain.dnstype || "*"}</td>
+                            {domain.service === "Web Proxy" ? (
+                                <>
+                                    <td className="px-4 py-2">
+                                        <ServerTag hostname={domain.server?.hostname || ""} />
+                                    </td>
+                                </>
+                            ) : (
+                                <>
+                                    <td className="px-4 py-2">10.2.50.6</td>
+                                </>
+                            )}
+                            <td className="flex justify-end p-4 pr-6">
+                                <PencilIcon className="h-[20px]" />
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
