@@ -20,3 +20,8 @@ export interface ProjectResponse {
     success: boolean
     data: Project
 }
+
+export interface CreateProjectPayload {
+    name: string
+    domain: string
+}
