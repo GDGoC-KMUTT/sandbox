@@ -27,3 +27,13 @@ export interface ServerListResponse {
     success: boolean
     data: PublicServer[]
 }
+
+export interface CreateServerPayload {
+    hostname: string
+    username: string
+    password: string
+    os: string
+    v_cpu: number
+    memory: number
+    projectId?: string
+}
