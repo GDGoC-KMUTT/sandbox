@@ -13,7 +13,17 @@ const ServerList: React.FC<IServerList> = ({ projectId }) => {
     }
     console.log("Here is server list")
     console.log(data?.data)
-    return <div className="flex flex-wrap">{data?.data.map((server, index) => <ServerCard key={index} {...server} />)}</div>
+
+    if (!data?.data || data.data.length === 0) {
+        return <div className="text-center my-[100px]">No servers available</div>
+    }
+    return (
+        <div className="flex flex-wrap">
+            {data?.data.map((server, index) => (
+                <ServerCard key={index} {...server} />
+            ))}
+        </div>
+    )
 }
 
 export default ServerList
