@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import useAuthCallBack from "../../hooks/useAuthCallback"
 import { useAuth } from "../../stores/authHelpers"
+import PageLoading from "../../components/loader/PageLoading"
 
 function Callback() {
     const navigate = useNavigate()
@@ -33,7 +34,7 @@ function Callback() {
         handleCallback()
     }, [navigate, mutateAsync])
 
-    return <div>Processing callback...</div>
+    return <PageLoading />
 }
 
 export default Callback

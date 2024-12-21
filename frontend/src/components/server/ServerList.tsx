@@ -1,4 +1,5 @@
 import useFetchServers from "../../hooks/useFetchServers"
+import ServerCardLoading from "../loader/ServerCardLoading"
 import ServerCard from "./ServerCard"
 
 interface IServerList {
@@ -9,11 +10,15 @@ const ServerList: React.FC<IServerList> = ({ projectId }) => {
     const { data, isLoading } = useFetchServers(projectId)
 
     if (isLoading) {
-        return <div>Server loading</div>
+        return (
+            <div className="flex flex-wrap">
+                <ServerCardLoading />
+                <ServerCardLoading />
+                <ServerCardLoading />
+                <ServerCardLoading />
+            </div>
+        )
     }
-    console.log("Here is server list")
-    console.log(data?.data)
-
     if (!data?.data || data.data.length === 0) {
         return <div className="text-center my-[100px]">No servers available</div>
     }

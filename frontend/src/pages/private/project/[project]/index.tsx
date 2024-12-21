@@ -10,6 +10,8 @@ import CreateDomainModal from "../../../../components/modal/CreateDomainModal"
 import useFetchProjectInfo from "../../../../hooks/useFetchProjectInfo"
 import { Cog6ToothIcon } from "@heroicons/react/24/solid"
 import ProjectSettingModal from "../../../../components/modal/ProjectSettingModal"
+import TabBodyLoading from "../../../../components/loader/TabBodyLoading"
+import ProjectHeaderLoading from "../../../../components/loader/ProjectHeaderLoading"
 
 const Index = () => {
     const { project: projectId } = useParams()
@@ -38,12 +40,10 @@ const Index = () => {
         setActiveModal(null)
     }
 
-    if (isLoading) {
-        return <div>project loading</div>
-    }
-
     const users = data?.data.users || []
-    const headerContent = (
+    const headerContent = isLoading ? (
+        <ProjectHeaderLoading />
+    ) : (
         <>
             <div className={"flex flex-col gap-[10px]"}>
                 <h2>{data?.data.name}</h2>
@@ -60,7 +60,7 @@ const Index = () => {
         </>
     )
 
-    const bodyContent = <Tabs tabs={tabs} defaultTab={0} />
+    const bodyContent = isLoading ? <TabBodyLoading tabs={tabs} defaultTab={0} /> : <Tabs tabs={tabs} defaultTab={0} />
     return (
         <>
             <MainLayout headerContent={headerContent} bodyContent={bodyContent} />
