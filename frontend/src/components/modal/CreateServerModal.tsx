@@ -37,7 +37,7 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
     if (!isOpen) return null
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
-            <div className="bg-white rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-background rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
                 <h2 className="text-xl font-semibold mb-4">Create New Server</h2>
                 <div className="mb-4">
                     <label htmlFor="hostname" className="block text-sm font-medium text-foreground">
@@ -141,4 +141,3 @@ const CreateServerModal: React.FC<CreateServerModalProps> = ({ isOpen, onClose, 
 }
 
 export default CreateServerModal
-
