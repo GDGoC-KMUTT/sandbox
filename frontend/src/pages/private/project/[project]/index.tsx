@@ -10,13 +10,20 @@ import { useState } from "react"
 import CreateServerModal from "../../../../components/modal/CreateServerModal"
 import { CreateServerPayload } from "../../../../types/server"
 import useCreateServer from "../../../../hooks/useCreateServer"
+import CreateDomainModal from "../../../../components/modal/CreateDomainModal"
+import { CreateDomainPayload } from "../../../../types/domain"
+import useCreateDnsRecord from "../../../../hooks/useCreateDnsRecord"
+import useCreateWebProxy from "../../../../hooks/useCreateWebProxy"
 
 const Index = () => {
     const { project: projectId } = useParams()
     const { data, isLoading, refetch } = useFetchProjectInfo(projectId || "0")
     const [isCreateServerModalOpen, setIsCreateServerModalOpen] = useState(false)
-    // const [isCreateDNSModalOpen, setIsCreateDNSModalOpen] = useState(false)
-    const { mutate, isPending } = useCreateServer()
+    const [isCreateDomainModalOpen, setIsCreateDomainModalOpen] = useState(false)
+    const { mutate: createServer, isPending: isCreateServerPending } = useCreateServer()
+    const { mutate: createDnsRecord, isPending: isCreateDnsRecordPending } = useCreateDnsRecord()
+    const { mutate: createWebProxy, isPending: isCreateWebProxyPending } = useCreateWebProxy()
+    const isAnyPending = isCreateDnsRecordPending || isCreateWebProxyPending
 
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
@@ -32,12 +39,12 @@ const Index = () => {
         {
             label: "DNS Manager",
             content: <DomainList />,
-            newFunction: () => "",
+            newFunction: () => setIsCreateDomainModalOpen(true),
         },
     ]
 
     const handleCreateServer = (server: CreateServerPayload) => {
-        mutate(
+        createServer(
             {
                 hostname: server.hostname,
                 username: server.username,
@@ -57,6 +64,54 @@ const Index = () => {
                 },
             }
         )
+    }
+
+    const handleCreateDomain = (domain: CreateDomainPayload) => {
+        if (domain.service == "dns") {
+            createDnsRecord(
+                {
+                    hostname: domain.hostname,
+                    dnstype: domain.dnstype,
+                    target: domain.target,
+                    projectId: projectId,
+                },
+                {
+                    onSuccess: () => {
+                        setIsCreateDomainModalOpen(false)
+                        refetch()
+                    },
+                    onError: () => {
+                        setIsCreateDomainModalOpen(false)
+                    },
+                }
+            )
+        } else if (domain.service == "webProxy") {
+            const portNumber = parseInt(domain.port.toString(), 10)
+            const serverNumber = parseInt(domain.server_id.toString(), 10)
+            if (isNaN(portNumber) || isNaN(serverNumber)) {
+                alert("Invalid port or server number")
+                return
+            }
+            createWebProxy(
+                {
+                    hostname: domain.hostname,
+                    server_id: serverNumber,
+                    port: portNumber,
+                    projectId: projectId,
+                },
+                {
+                    onSuccess: () => {
+                        setIsCreateDomainModalOpen(false)
+                        refetch()
+                    },
+                    onError: () => {
+                        setIsCreateDomainModalOpen(false)
+                    },
+                }
+            )
+        } else {
+            console.log("Wrong service type")
+        }
     }
 
     if (isLoading) {
@@ -89,12 +144,17 @@ const Index = () => {
                     isOpen={isCreateServerModalOpen}
                     onClose={() => setIsCreateServerModalOpen(false)}
                     onCreate={handleCreateServer}
-                    isLoading={isPending}
+                    isLoading={isCreateServerPending}
                 />
             )}
-            {/* {isCreateDNSModalOpen && (
-                <CreateDNSModal isOpen={isCreateDNSModalOpen} onClose={() => setIsCreateDNSModalOpen(false)} projectId={projectId} />
-            )} */}
+            {isCreateDomainModalOpen && (
+                <CreateDomainModal
+                    isOpen={isCreateDomainModalOpen}
+                    onClose={() => setIsCreateDomainModalOpen(false)}
+                    onCreate={handleCreateDomain}
+                    isLoading={isAnyPending}
+                />
+            )}
         </>
     )
 }
