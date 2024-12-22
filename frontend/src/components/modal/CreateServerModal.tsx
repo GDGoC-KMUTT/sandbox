@@ -39,8 +39,8 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                     })
                     onClose()
                 },
-                onError: () => {
-                    alert("Err")
+                onError: (e) => {
+                    alert(e)
                     onClose()
                 },
             }
@@ -159,3 +159,4 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
 }
 
 export default CreateServerModal
+

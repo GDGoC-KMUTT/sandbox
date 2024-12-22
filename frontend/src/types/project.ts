@@ -25,3 +25,17 @@ export interface CreateProjectPayload {
     name: string
     domain: string
 }
+
+export interface AddUserPayload {
+    email: string
+    project_id: number
+}
+export interface DeleteUserPayload {
+    email: string
+    project_id: number
+}
+export interface EditProjectPayload {
+    project_id: number
+    name: string
+    domain: string
+}

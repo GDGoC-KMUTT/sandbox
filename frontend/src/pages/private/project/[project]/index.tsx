@@ -66,7 +66,7 @@ const Index = () => {
             <MainLayout headerContent={headerContent} bodyContent={bodyContent} />
             {activeModal === "server" && <CreateServerModal projectId={projectId} onClose={handleCloseModal} />}
             {activeModal === "domain" && <CreateDomainModal projectId={projectId} onClose={handleCloseModal} />}
-            {activeModal === "setting" && <ProjectSettingModal onClose={handleCloseModal} />}
+            {activeModal === "setting" && <ProjectSettingModal projectId={projectId} onClose={handleCloseModal} />}
         </>
     )
 }

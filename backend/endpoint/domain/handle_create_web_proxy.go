@@ -1,7 +1,6 @@
 package domainEndpoint
 
 import (
-	"fmt"
 	"sandbox-skeleton/type/common"
 	"sandbox-skeleton/type/payload"
 	"sandbox-skeleton/type/response"

@@ -40,6 +40,8 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
 	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
+	projectGroup.Patch("edit", projectHandler.HandleEditProject)
+	projectGroup.Delete("deleteuser", projectHandler.HandleDeleteUser)
 
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")
