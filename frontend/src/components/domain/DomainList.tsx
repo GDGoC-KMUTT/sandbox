@@ -1,5 +1,6 @@
 import { PencilIcon } from "@heroicons/react/24/solid"
 import useFetchDomains from "../../hooks/useFetchDomains"
+import DomainLoading from "../loader/DomainLoading"
 
 interface IDomainList {
     projectId: string
@@ -13,7 +14,7 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
     const { data: domains, isLoading } = useFetchDomains(projectId)
 
     if (isLoading) {
-        return <div className={"border"}>Server loading</div>
+        return <DomainLoading />
     }
     if (!domains || !domains.data) {
         return <div>No domains available</div>
