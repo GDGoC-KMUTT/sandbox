@@ -1,6 +1,9 @@
 import { PencilIcon } from "@heroicons/react/24/solid"
 import useFetchDomains from "../../hooks/useFetchDomains"
 import DomainLoading from "../loader/DomainLoading"
+import DomainSettingModal from "../modal/DomainSettingModal"
+import { useState } from "react"
+import { Domain } from "../../types/domain"
 
 interface IDomainList {
     projectId: string
@@ -12,6 +15,11 @@ const ServerTag = ({ hostname }: { hostname: string | null }) => {
 
 const DomainList: React.FC<IDomainList> = ({ projectId }) => {
     const { data: domains, isLoading } = useFetchDomains(projectId)
+    const [activeModal, setActiveModal] = useState<"dns" | "webproxy" | null>(null)
+    const [selectedDns, setSelectedDns] = useState<Domain>()
+    const handleCloseModal = () => {
+        setActiveModal(null)
+    }
 
     if (isLoading) {
         return <DomainLoading />
@@ -32,7 +40,13 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
                 </thead>
                 <tbody>
                     {domains?.data.map((domain, index) => (
-                        <tr key={index}>
+                        <tr
+                            key={index}
+                            onClick={() => {
+                                setSelectedDns(domain)
+                                setActiveModal("dns")
+                            }}
+                        >
                             <td className="px-4 py-2">{domain.hostname}</td>
                             <td className="px-4 py-2">{domain.dnstype || "*"}</td>
                             {domain.service === "Web Proxy" ? (
@@ -47,12 +61,18 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
                                 </>
                             )}
                             <td className="flex justify-end p-4 pr-6">
-                                <PencilIcon className="h-[20px]" />
+                                <div className="p-1 hover:bg-form rounded-full cursor-pointer">
+                                    <PencilIcon className="h-[20px] w-[20px]" />
+                                </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+            {activeModal === "dns" && selectedDns && <DomainSettingModal onClose={handleCloseModal} projectId={projectId} domain={selectedDns} />}
+            {/* {activeModal === "webproxy" && selectedDns && (
+                <WebProxySettingModal onClose={handleCloseModal} projectId={projectId} domain={selectedDns} />
+            )} */}
         </div>
     )
 }

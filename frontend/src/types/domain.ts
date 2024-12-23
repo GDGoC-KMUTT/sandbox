@@ -29,6 +29,17 @@ export interface CreateDomainPayload {
     projectId?: string
     service: string
 }
+export interface EditDomainPayload {
+    id: number
+    hostname: string
+    dnstype: string
+    target: string
+    server_id: number
+    port: number
+    projectId?: string
+    service: string
+}
+
 export interface CreateDnsRecord {
     hostname: string
     dnstype: string
@@ -42,3 +53,20 @@ export interface CreateWebProxy {
     port: number
     projectId?: string
 }
+
+export interface EditDnsRecord {
+    id: number
+    hostname: string
+    dnstype: string
+    target: string
+    projectId?: string
+}
+
+export interface EditWebProxy {
+    id: number
+    hostname: string
+    server_id: number
+    port: number
+    projectId?: string
+}
+

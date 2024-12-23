@@ -1,61 +1,54 @@
 import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
-import { CreateDomainPayload } from "../../types/domain"
-import useCreateDnsRecord from "../../hooks/useCreateDnsRecord"
-import useCreateWebProxy from "../../hooks/useCreateWebProxy"
+import { CreateDomainPayload, Domain, EditDomainPayload } from "../../types/domain"
 import { useQueryClient } from "@tanstack/react-query"
+import useEditDnsRecord from "../../hooks/useEditDnsRecord"
 import useFetchServers from "../../hooks/useFetchServers"
+import useEditWebProxy from "../../hooks/useEditWebProxy"
 
-export interface ICreateDomainModal {
+export interface IEditDomainModal {
     onClose: () => void
     projectId: string
+    domain: Domain
 }
 
-const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId }) => {
-    const { mutate: createDnsRecord, isPending: isCreateDnsRecordPending } = useCreateDnsRecord()
-    const { mutate: createWebProxy, isPending: isCreateWebProxyPending } = useCreateWebProxy()
+const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, domain }) => {
+    const { mutate: editDnsRecord, isPending: isEditDnsRecordPending } = useEditDnsRecord()
+    const { mutate: editWebProxy, isPending: isEditWebProxyPending } = useEditWebProxy()
+
     const { data: servers, isLoading: isFetchServersPending } = useFetchServers(projectId)
-    const [domain, setDomain] = useState<CreateDomainPayload>({
-        hostname: "",
-        dnstype: "A",
-        target: "",
-        server_id: 0,
-        port: 0,
-        service: "dns",
-    })
+
     const queryClient = useQueryClient()
-
-    if (isFetchServersPending) {
-        return (
-            <div>
-                <DotLoading />
-            </div>
-        )
-    }
-    if (!servers) {
-        return <div>No Data</div>
-    }
-
-    const isAnyPending = isCreateDnsRecordPending || isCreateWebProxyPending
+    const [domainValue, setDomainValue] = useState<EditDomainPayload>({
+        id: domain.id,
+        hostname: domain.hostname || "",
+        dnstype: domain.dnstype || "A",
+        target: domain.target || "",
+        server_id: domain.server?.id || 0,
+        port: domain.port || 0,
+        service: domain.service || "",
+    })
+    const isAnyPending = isEditDnsRecordPending || isEditWebProxyPending
 
     const handleInputChange = (key: keyof CreateDomainPayload, value: string | number) => {
-        setDomain((prev) => ({
+        setDomainValue((prev) => ({
             ...prev,
             [key]: value,
         }))
     }
 
     const handleCreate = () => {
-        if (domain.service == "dns") {
-            if (!domain.hostname.trim() || !domain.dnstype.trim() || !domain.target.trim()) {
+        if (domainValue.service == "DNS record") {
+            if (!domainValue.hostname.trim() || !domainValue.dnstype.trim() || !domainValue.target.trim()) {
                 alert("Please fill in all fields correctly.")
                 return
             } else {
-                createDnsRecord(
+                editDnsRecord(
                     {
-                        hostname: domain.hostname,
-                        dnstype: domain.dnstype,
-                        target: domain.target,
+                        id: domain.id,
+                        hostname: domainValue.hostname,
+                        dnstype: domainValue.dnstype,
+                        target: domainValue.target,
                         projectId: projectId,
                     },
                     {
@@ -71,25 +64,17 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                     }
                 )
             }
-        } else if (domain.service == "webProxy") {
-            console.log(servers.data)
-            console.log(domain)
-            if (!domain.hostname.trim() || domain.server_id == 0 || domain.port == 0) {
+        } else if (domainValue.service == "Web Proxy") {
+            if (!domainValue.hostname.trim() || domainValue.server_id == 0 || domainValue.port == 0) {
                 alert("Please fill in all fields correctly.")
                 return
             } else {
-                const server_id = Number(domain.server_id)
-                const port = Number(domain.port)
-
-                if (isNaN(server_id) || isNaN(port)) {
-                    throw new Error("Invalid server_id or port")
-                }
-
-                createWebProxy(
+                editWebProxy(
                     {
-                        hostname: domain.hostname,
-                        server_id,
-                        port,
+                        id: domain.id,
+                        hostname: domainValue.hostname,
+                        server_id: domainValue.server_id,
+                        port: domainValue.port,
                         projectId: projectId,
                     },
                     {
@@ -107,10 +92,11 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
             }
         }
     }
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
             <div className="bg-background rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
-                <h2 className="text-xl font-semibold mb-4">Create New DNS</h2>
+                <h2 className="text-xl font-semibold mb-4">Edit DNS</h2>
                 <div className="mb-4">
                     <label htmlFor="projectDescription" className="block text-sm font-medium text-foreground">
                         Hostname
@@ -119,7 +105,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                         <input
                             id="hostname"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[70%] rounded-md border-2 focus:border-primary"
-                            value={domain.hostname}
+                            value={domainValue.hostname}
                             onChange={(e) => handleInputChange("hostname", e.target.value)}
                             disabled={isAnyPending}
                         ></input>
@@ -132,17 +118,19 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                     </label>
                     <div className="flex w-full space-x-2">
                         <button
-                            onClick={() => handleInputChange("service", "dns")}
+                            onClick={() => handleInputChange("service", "DNS record")}
                             className={`flex-auto p-2 rounded-md ${
-                                domain.service === "dns" ? "bg-primary text-background" : "bg-background text-foreground border-2 border-slate-200"
+                                domainValue.service === "DNS record"
+                                    ? "bg-primary text-background"
+                                    : "bg-background text-foreground border-2 border-slate-200"
                             }`}
                         >
                             DNS Record
                         </button>
                         <button
-                            onClick={() => handleInputChange("service", "webProxy")}
+                            onClick={() => handleInputChange("service", "Web Proxy")}
                             className={`flex-auto p-2 rounded-md ${
-                                domain.service === "webProxy"
+                                domainValue.service === "Web Proxy"
                                     ? "bg-primary text-background"
                                     : "bg-background text-foreground border-2 border-slate-200"
                             }`}
@@ -151,7 +139,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                         </button>
                     </div>
                 </div>
-                {domain.service === "dns" && (
+                {domainValue.service === "DNS record" && (
                     <>
                         <div className="mb-4">
                             <label htmlFor="dnstype" className="block text-sm font-medium text-foreground">
@@ -160,7 +148,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                             <select
                                 id="dnstype"
                                 className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
-                                value={domain.dnstype}
+                                value={domainValue.dnstype}
                                 onChange={(e) => handleInputChange("dnstype", e.target.value)}
                                 disabled={isAnyPending}
                             >
@@ -175,7 +163,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                             <input
                                 id="target"
                                 className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
-                                value={domain.target}
+                                value={domainValue.target}
                                 onChange={(e) => handleInputChange("target", e.target.value)}
                                 disabled={isAnyPending}
                             />
@@ -183,7 +171,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                     </>
                 )}
 
-                {domain.service === "webProxy" && (
+                {domainValue.service === "Web Proxy" && (
                     <>
                         <div className="mb-4">
                             <label htmlFor="server" className="block text-sm font-medium text-foreground">
@@ -192,14 +180,14 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                             <select
                                 id="server_id"
                                 className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
-                                value={domain.server_id}
+                                value={domainValue.server_id}
                                 onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
                                 disabled={isFetchServersPending}
                             >
                                 <option value={0} disabled>
                                     Select a server
                                 </option>
-                                {servers.data.map((server, index) => (
+                                {servers?.data.map((server, index) => (
                                     <option key={index} value={server.id}>
                                         {server.hostname}
                                     </option>
@@ -214,7 +202,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                                 id="port"
                                 type="number"
                                 className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
-                                value={domain.port}
+                                value={domainValue.port}
                                 onChange={(e) => handleInputChange("port", Number(e.target.value))}
                                 disabled={isAnyPending}
                                 max={65535}
@@ -231,7 +219,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                         Cancel
                     </button>
                     <button className="px-6" onClick={handleCreate} disabled={isAnyPending}>
-                        {isAnyPending ? <DotLoading /> : "Create"}
+                        {isAnyPending ? <DotLoading /> : "Save"}
                     </button>
                 </div>
             </div>
@@ -239,5 +227,5 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
     )
 }
 
-export default CreateDomainModal
+export default DomainSettingModal
 
