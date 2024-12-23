@@ -54,6 +54,8 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	domainGroup.Get("/list", domainHandler.HandleDomainListGet)
 	domainGroup.Post("/create/dns", domainHandler.HandleCreateDnsRecord)
 	domainGroup.Post("/create/webproxy", domainHandler.HandleCreateWebProxy)
+	domainGroup.Patch("/edit/dns", domainHandler.HandleEditDnsRecord)
+	domainGroup.Patch("/edit/webproxy", domainHandler.HandleEditWebProxy)
 
 	// * not found
 	app.Use(HandleNotFound)

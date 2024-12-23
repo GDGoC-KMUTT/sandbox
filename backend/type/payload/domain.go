@@ -8,7 +8,21 @@ type CreateDnsRecord struct {
 
 type CreateWebProxy struct {
 	Hostname *string `json:"hostname"`
-	ServerId *int    `json:"server_id"`
+	ServerId *uint64 `json:"server_id"`
+	Port     *int    `json:"port"`
+}
+
+type EditDnsRecord struct {
+	Id       *uint64 `json:"id"`
+	Hostname *string `json:"hostname"`
+	DNSType  *string `json:"dnstype"`
+	Target   *string `json:"target"`
+}
+
+type EditWebProxy struct {
+	Id       *uint64 `json:"id"`
+	Hostname *string `json:"hostname"`
+	ServerId *uint64 `json:"server_id"`
 	Port     *int    `json:"port"`
 }
 
