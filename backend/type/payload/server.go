@@ -9,6 +9,9 @@ type CreateServer struct {
 	V_cpu    *int    `json:"v_cpu"`
 	Memory   *int    `json:"memory"`
 }
+type EditServer struct {
+	Hostname *string `json:"hostname"`
+}
 
 type Server struct {
 	Id       *uint64 `json:"id"`

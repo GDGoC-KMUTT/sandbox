@@ -5,11 +5,16 @@ import useFetchServerInfo from "../../../../../../hooks/useFetchServerInfo"
 import { useParams } from "react-router-dom"
 import useFetchProjectInfo from "../../../../../../hooks/useFetchProjectInfo"
 import ServerInfoCardLoading from "../../../../../../components/loader/ServerInfoCardLoading"
+import { Cog6ToothIcon, ServerStackIcon } from "@heroicons/react/24/solid"
+import { useState } from "react"
+import ServerSettingModal from "../../../../../../components/modal/ServerSettingModal"
+import PageLoading from "../../../../../../components/loader/PageLoading"
 
 const Index = () => {
     const { project: projectId, server: serverId } = useParams()
     const { data: project, isLoading: isProjectLoading } = useFetchProjectInfo(projectId || "0")
     const { data: server, isLoading: isServerLoading } = useFetchServerInfo(projectId || "0", serverId || "0")
+    const [activeModal, setActiveModal] = useState(false)
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
         return <div>Error: Invalid project ID</div>
@@ -17,20 +22,25 @@ const Index = () => {
 
     const serverIdNumber = parseInt(projectId || "", 10)
     if (serverId == null || isNaN(serverIdNumber)) {
-        return <div>Error: Invalid Server ID</div>
+        return <PageLoading />
     }
 
     if (server == null || project == null) {
-        return <div>Error: Server not exist</div>
+        return <PageLoading />
     }
 
     const headerContent = (
         <>
-            <div className={"flex flex-col gap-[10px]"}>
-                <h2>{project.data.name}</h2>
-                <div className={"flex gap-2"}>
-                    <h3>{project.data.domain}</h3>
+            <div className={"flex w-full justify-between items-start gap-[10px]"}>
+                <div>
+                    <h2>{project.data.name}</h2>
+                    <div className={"flex gap-2 my-2"}>
+                        <ServerStackIcon className="w-6" />
+                        <h2 className="text-2xl">{server.data.hostname}</h2>
+                    </div>
                 </div>
+
+                <Cog6ToothIcon className="w-7 cursor-pointer" onClick={() => setActiveModal(true)} />
             </div>
         </>
     )
@@ -42,19 +52,22 @@ const Index = () => {
         </div>
     )
     return (
-        <MainLayout
-            headerContent={headerContent}
-            bodyContent={
-                isServerLoading || isProjectLoading ? (
-                    <div className="flex gap-5">
-                        <ServerInfoCardLoading />
-                        <ServerInfoCardLoading />
-                    </div>
-                ) : (
-                    bodyContent
-                )
-            }
-        />
+        <>
+            <MainLayout
+                headerContent={headerContent}
+                bodyContent={
+                    isServerLoading || isProjectLoading ? (
+                        <div className="flex gap-5">
+                            <ServerInfoCardLoading />
+                            <ServerInfoCardLoading />
+                        </div>
+                    ) : (
+                        bodyContent
+                    )
+                }
+            />
+            {activeModal && <ServerSettingModal onClose={() => setActiveModal(false)} projectId={projectId} serverId={serverId} />}
+        </>
     )
 }
 export default Index

@@ -37,3 +37,9 @@ export interface CreateServerPayload {
     memory: number
     projectId?: string
 }
+
+export interface EditServerPayload {
+    projectId?: string
+    serverId?: string
+    hostname: string
+}
