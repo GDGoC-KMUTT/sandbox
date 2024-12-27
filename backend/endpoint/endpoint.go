@@ -46,17 +46,23 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")
 	serverGroup.Post("create", serverHandler.HandleCreateServer)
+
 	serverGroup.Get("list", serverHandler.HandleServerListGet)
+	serverGroup.Get("instances", serverHandler.HandleGetInstances)
+
 	serverGroup.Get(":serverId", serverHandler.HandleServerGet)
 	serverGroup.Patch(":serverId/edit", serverHandler.HandleEditServer)
+	serverGroup.Delete(":serverId/delete", serverHandler.HandleDeleteServer)
+
+	// incus
 
 	// * domain group
 	domainGroup := projectGroup.Group(":projectId/domain")
-	domainGroup.Get("/list", domainHandler.HandleDomainListGet)
-	domainGroup.Post("/create/dns", domainHandler.HandleCreateDnsRecord)
-	domainGroup.Post("/create/webproxy", domainHandler.HandleCreateWebProxy)
-	domainGroup.Patch("/edit/dns", domainHandler.HandleEditDnsRecord)
-	domainGroup.Patch("/edit/webproxy", domainHandler.HandleEditWebProxy)
+	domainGroup.Get("list", domainHandler.HandleDomainListGet)
+	domainGroup.Post("create/dns", domainHandler.HandleCreateDnsRecord)
+	domainGroup.Post("create/webproxy", domainHandler.HandleCreateWebProxy)
+	domainGroup.Patch("edit/dns", domainHandler.HandleEditDnsRecord)
+	domainGroup.Patch("edit/webproxy", domainHandler.HandleEditWebProxy)
 
 	// * not found
 	app.Use(HandleNotFound)
