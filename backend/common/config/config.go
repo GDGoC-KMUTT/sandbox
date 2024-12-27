@@ -17,6 +17,10 @@ type Config struct {
 	OauthClientSecret *string   `yaml:"oauthClientSecret" validate:"required"`
 	OauthEndpoint     *string   `yaml:"oauthEndpoint" validate:"required"`
 	FrontendUrl       *string   `yaml:"frontendUrl" validate:"required"`
+	ServerUrl         *string   `yaml:"serverUrl" validate:"required"`
+	ClientCert        *string   `yaml:"clientCert" validate:"required"`
+	ClientKey         *string   `yaml:"clientKey" validate:"required"`
+	ImageFingerPrint  *string   `yaml:"imageFingerPrint" validate:"required"`
 }
 
 func Init() *Config {
