@@ -5,10 +5,10 @@ import useFetchServerInfo from "../../../../../../hooks/useFetchServerInfo"
 import { useParams } from "react-router-dom"
 import useFetchProjectInfo from "../../../../../../hooks/useFetchProjectInfo"
 import ServerInfoCardLoading from "../../../../../../components/loader/ServerInfoCardLoading"
-import { Cog6ToothIcon, ServerStackIcon } from "@heroicons/react/24/solid"
+import { ServerStackIcon, TrashIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
-import ServerSettingModal from "../../../../../../components/modal/ServerSettingModal"
 import PageLoading from "../../../../../../components/loader/PageLoading"
+import DeleteServerModal from "../../../../../../components/modal/DeleteServerModal"
 
 const Index = () => {
     const { project: projectId, server: serverId } = useParams()
@@ -40,14 +40,14 @@ const Index = () => {
                     </div>
                 </div>
 
-                <Cog6ToothIcon className="w-7 cursor-pointer" onClick={() => setActiveModal(true)} />
+                <TrashIcon className="w-6 cursor-pointer" onClick={() => setActiveModal(true)} />
             </div>
         </>
     )
 
     const bodyContent = (
         <div className="flex gap-5">
-            <ServerInfoCard ip={server.data.ip} ram={server.data.memory} storage={server.data.memory} vcpu={server.data.v_cpu} />
+            <ServerInfoCard ip={server.data.ip} ram={server.data.memory} storage={server.data.storage} vcpu={server.data.v_cpu} />
             <CredentialCard user={server.data.username} password={server.data.password} />
         </div>
     )
@@ -66,7 +66,7 @@ const Index = () => {
                     )
                 }
             />
-            {activeModal && <ServerSettingModal onClose={() => setActiveModal(false)} projectId={projectId} serverId={serverId} />}
+            {activeModal && <DeleteServerModal onClose={() => setActiveModal(false)} projectId={projectId} serverId={serverId} />}
         </>
     )
 }

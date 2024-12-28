@@ -2,6 +2,7 @@ package serverEndpoint
 
 import (
 	"sandbox-skeleton/type/common"
+	"sandbox-skeleton/type/response"
 	"sandbox-skeleton/type/table"
 
 	"github.com/bsthun/gut"
@@ -47,5 +48,5 @@ func (r *Handler) HandleDeleteServer(c *fiber.Ctx) error {
 		return gut.Err(false, "Failed to delete server record", tx.Error)
 	}
 
-	return nil
+	return c.Status(fiber.StatusCreated).JSON(response.Success("Server removed from the project"))
 }

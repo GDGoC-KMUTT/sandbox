@@ -12,31 +12,36 @@ import (
 func (r *Handler) HandleDeleteInstance(c *fiber.Ctx, hostname string) error {
 	state := api.InstanceStatePut{
 		Action:   "stop",
-		Timeout:  30,
+		Timeout:  60,
 		Force:    true,
 		Stateful: false,
 	}
-	// stop instance
+
+	// Stop instance
 	op, err := r.incus.UpdateInstanceState(hostname, state, "etag123")
 	if err != nil {
+		fmt.Printf("Error updating instance state: %v\n", err)
 		return fmt.Errorf("failed to stop instance: %w", err)
 	}
 	if err := op.Wait(); err != nil {
+		fmt.Printf("Error waiting for instance stop: %v\n", err)
 		return fmt.Errorf("instance stopping operation failed: %w", err)
 	}
 
 	time.Sleep(2 * time.Second)
 
-	// delete instance
+	// Delete instance
 	op, err = r.incus.DeleteInstance(hostname)
 	if err != nil {
+		fmt.Printf("Error deleting instance: %v\n", err)
 		return fmt.Errorf("failed to delete instance: %w", err)
 	}
 	if err := op.Wait(); err != nil {
+		fmt.Printf("Error waiting for instance deletion: %v\n", err)
 		return fmt.Errorf("instance deletion operation failed: %w", err)
 	}
-	time.Sleep(1 * time.Second)
+
+	time.Sleep(2 * time.Second)
 
 	return nil
-
 }
