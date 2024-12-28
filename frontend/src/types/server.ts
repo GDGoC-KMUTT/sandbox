@@ -6,7 +6,8 @@ export interface Server {
     ip: string
     os: string
     v_cpu: number
-    memory: number
+    memory: string
+    storage: string
 }
 
 export interface PublicServer {
@@ -15,7 +16,9 @@ export interface PublicServer {
     ip: string
     os: string
     v_cpu: number
-    memory: number
+    memory: string
+    storage: string
+    status: string
 }
 
 export interface ServerResponse {
@@ -28,6 +31,11 @@ export interface ServerListResponse {
     data: PublicServer[]
 }
 
+// export interface DeleteServerResponse {
+//     success: boolean
+//     data: Server
+// }
+
 export interface CreateServerPayload {
     hostname: string
     username: string
@@ -35,6 +43,7 @@ export interface CreateServerPayload {
     os: string
     v_cpu: number
     memory: number
+    storage: number
     projectId?: string
 }
 

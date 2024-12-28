@@ -9,8 +9,8 @@ const createServer = async (serverData: CreateServerPayload): Promise<ServerResp
         password: serverData.password,
         os: serverData.os,
         v_cpu: serverData.v_cpu,
-        memory: serverData.memory,
-        ip: "192.168.1.10", //placeholder
+        memory: String(serverData.memory),
+        storage: String(serverData.storage),
     })
     if (response.status !== 201) {
         throw new Error("Failed to create server")
