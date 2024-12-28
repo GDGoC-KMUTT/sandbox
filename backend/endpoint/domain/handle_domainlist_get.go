@@ -51,10 +51,7 @@ func (r *Handler) HandleDomainListGet(c *fiber.Ctx) error {
 			mappedServer = &payload.PublicServer{
 				Id:       server.Id,
 				Hostname: server.Hostname,
-				IP:       server.IP,
-				OS:       server.OS,
-				VCPU:     server.VCPU,
-				Memory:   server.Memory,
+				IP:       server.OS,
 			}
 		}
 

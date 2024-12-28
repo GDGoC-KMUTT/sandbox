@@ -35,13 +35,21 @@ func (r *Handler) HandleServerListGet(c *fiber.Ctx) error {
 	// Map to response format
 	var mappedServers []payload.PublicServer
 	for _, server := range servers {
+
+		instance, err := r.HandleGetInstance(c, *server.Hostname)
+		if err != nil {
+			return gut.Err(false, "Failed to fetch instance details", err)
+		}
+
 		mappedServers = append(mappedServers, payload.PublicServer{
 			Id:       server.Id,
 			Hostname: server.Hostname,
-			IP:       server.IP,
+			IP:       &instance.Ip,
 			OS:       server.OS,
 			VCPU:     server.VCPU,
 			Memory:   server.Memory,
+			Status:   &instance.Status,
+			Storage:  server.Storage,
 		})
 	}
 

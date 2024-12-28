@@ -3,19 +3,19 @@ import ActiveStatus from "../ui/ActiveStatus"
 import { GlobeAltIcon } from "@heroicons/react/24/outline"
 import { PublicServer } from "../../types/server"
 
-const ServerCard: React.FC<PublicServer> = ({ id, hostname, ip, v_cpu, memory }) => {
+const ServerCard: React.FC<PublicServer> = ({ id, hostname, ip, v_cpu, memory, status }) => {
     const navigate = useNavigate()
     return (
         <div className="flex flex-col justify-center gap-[5px] min-w-[300px] min-h-[150px] p-[20px] m-[20px] rounded-2xl bg-background shadow-card">
             <h4>{hostname}</h4>
             <div className="flex gap-2">
                 <div className="flex justify-center items-center">
-                    <GlobeAltIcon className={"w-[21px] text-form"} strokeWidth={1} />
+                    <GlobeAltIcon className={`w-[21px] text-form`} strokeWidth={1} />
                 </div>
-                <p>{ip}</p>
+                <p>{ip ? ip : "-"}</p>
             </div>
             <div className="flex gap-2">
-                <ActiveStatus status={true} />
+                <ActiveStatus status={status == "Running" ? true : false} />
                 <p>
                     {v_cpu} vCPU / {memory} GB RAM
                 </p>
