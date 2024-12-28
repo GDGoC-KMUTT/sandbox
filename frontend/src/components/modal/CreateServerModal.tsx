@@ -11,7 +11,15 @@ export interface ICreateServerModal {
 
 const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId }) => {
     const { mutate: createServer, isPending } = useCreateServer()
-    const [server, setServer] = useState<CreateServerPayload>({ hostname: "", username: "", password: "", os: "Debian", v_cpu: 2, memory: 1 })
+    const [server, setServer] = useState<CreateServerPayload>({
+        hostname: "",
+        username: "root",
+        password: "",
+        os: "Debian",
+        v_cpu: 2,
+        memory: 2048,
+        storage: 10,
+    })
     const queryClient = useQueryClient()
 
     const handleCreate = () => {
@@ -81,7 +89,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.username}
                         onChange={(e) => handleInputChange("username", e.target.value)}
-                        disabled={isPending}
+                        disabled={true}
                     />
                 </div>
                 <div className="mb-4">
@@ -97,19 +105,37 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         disabled={isPending}
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="os" className="block text-sm font-medium text-foreground">
-                        OS
-                    </label>
-                    <select
-                        id="os"
-                        className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
-                        value={server.os}
-                        onChange={(e) => handleInputChange("os", e.target.value)}
-                        disabled={true}
-                    >
-                        <option value="Debian">Debian</option>
-                    </select>
+                <div className="flex mb-4">
+                    <div className="flex-1">
+                        {" "}
+                        <label htmlFor="os" className="block text-sm font-medium text-foreground">
+                            OS
+                        </label>
+                        <select
+                            id="os"
+                            className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
+                            value={server.os}
+                            onChange={(e) => handleInputChange("os", e.target.value)}
+                            disabled={true}
+                        >
+                            <option value="Debian">Debian</option>
+                        </select>
+                    </div>
+                    <div className="w-4"></div>
+
+                    <div className="flex-1">
+                        <label htmlFor="storage" className="block text-sm font-medium text-foreground">
+                            Storage (GB)
+                        </label>
+                        <input
+                            type="number"
+                            id="storage"
+                            className="mt-1 block h-[40px] w-full p-3 rounded-md border-2 focus:border-primary"
+                            value={server.storage}
+                            onChange={(e) => handleInputChange("storage", e.target.value)}
+                            disabled={true}
+                        />
+                    </div>
                 </div>
                 <div className="flex mb-4">
                     <div className=" flex-1">
@@ -129,7 +155,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                     <div className="w-4"></div>
                     <div className=" flex-1">
                         <label htmlFor="memory" className="block text-sm font-medium text-foreground">
-                            Memory
+                            Memory (MB)
                         </label>
                         <input
                             type="number"

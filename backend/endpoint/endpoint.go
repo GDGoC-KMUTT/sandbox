@@ -51,7 +51,6 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	serverGroup.Get("instances", serverHandler.HandleGetInstances)
 
 	serverGroup.Get(":serverId", serverHandler.HandleServerGet)
-	serverGroup.Patch(":serverId/edit", serverHandler.HandleEditServer)
 	serverGroup.Delete(":serverId/delete", serverHandler.HandleDeleteServer)
 
 	// incus
@@ -63,6 +62,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	domainGroup.Post("create/webproxy", domainHandler.HandleCreateWebProxy)
 	domainGroup.Patch("edit/dns", domainHandler.HandleEditDnsRecord)
 	domainGroup.Patch("edit/webproxy", domainHandler.HandleEditWebProxy)
+	domainGroup.Delete("delete", projectHandler.HandleDeleteDomain)
 
 	// * not found
 	app.Use(HandleNotFound)

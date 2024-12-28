@@ -109,16 +109,17 @@ func (r *Handler) HandleCreateInstance(c *fiber.Ctx, config *payload.CreateIncus
 	}
 	hostname := instanceDetails.Name
 	os := instanceDetails.InstancePut.Config["image.os"]
-	cpu, _ := strconv.Atoi(instanceDetails.InstancePut.Config["limits.cpu"])
-	memory, _ := strconv.Atoi(instanceDetails.InstancePut.Config["limits.memory"])
+	vcpu, _ := strconv.Atoi(instanceDetails.InstancePut.Config["limits.cpu"])
+	memory := instanceDetails.InstancePut.Config["limits.memory"]
+	storage := instanceConfig.InstancePut.Devices["root"]["size"]
 
 	// Create the response struct
 	response := &payload.CreateInstanceResponse{
-		Ip:       "none",
 		Hostname: hostname,
 		Os:       os,
 		Memory:   memory,
-		Vcpu:     cpu,
+		Storage:  storage,
+		Vcpu:     vcpu,
 		Username: "root",
 		Password: *config.Password,
 	}

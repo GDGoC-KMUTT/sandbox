@@ -44,9 +44,10 @@ func (r *Handler) HandleCreateServer(c *fiber.Ctx) error {
 		Hostname: body.Hostname,
 		Username: body.Username,
 		Password: body.Password,
-		Os:       body.Os,
-		Vcpu:     body.V_cpu,
+		Os:       body.OS,
+		Vcpu:     body.VCPU,
 		Memory:   body.Memory,
+		Storage:  body.Storage,
 	}
 
 	instance, err := r.HandleCreateInstance(c, instanceConfig)
@@ -59,10 +60,10 @@ func (r *Handler) HandleCreateServer(c *fiber.Ctx) error {
 		Hostname:  &instance.Hostname,
 		Username:  &instance.Username,
 		Password:  &instance.Password,
-		IP:        &instance.Ip,
 		OS:        &instance.Os,
 		VCPU:      &instance.Vcpu,
 		Memory:    &instance.Memory,
+		Storage:   &instance.Storage,
 		ProjectId: &projectIDUint64,
 	}
 
