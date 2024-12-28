@@ -20,3 +20,4 @@ const useFetchDomains = (projectId: string) => {
 }
 
 export default useFetchDomains
+

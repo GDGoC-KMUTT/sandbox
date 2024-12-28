@@ -32,9 +32,6 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
             </div>
         )
     }
-    if (!servers) {
-        return <div>No Data</div>
-    }
 
     const isAnyPending = isCreateDnsRecordPending || isCreateWebProxyPending
 
@@ -72,8 +69,6 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                 )
             }
         } else if (domain.service == "webProxy") {
-            console.log(servers.data)
-            console.log(domain)
             if (!domain.hostname.trim() || domain.server_id == 0 || domain.port == 0) {
                 alert("Please fill in all fields correctly.")
                 return
@@ -189,22 +184,36 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                             <label htmlFor="server" className="block text-sm font-medium text-foreground">
                                 Server
                             </label>
-                            <select
-                                id="server_id"
-                                className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
-                                value={domain.server_id}
-                                onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
-                                disabled={isFetchServersPending}
-                            >
-                                <option value={0} disabled>
-                                    Select a server
-                                </option>
-                                {servers.data.map((server, index) => (
-                                    <option key={index} value={server.id}>
-                                        {server.hostname}
+                            {servers && servers.data && servers.data.length > 0 ? (
+                                <select
+                                    id="server_id"
+                                    className="mt-1 px-3 block h-[40px] w-full rounded-md border-2 focus:border-primary"
+                                    value={domain.server_id}
+                                    onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
+                                    disabled={isFetchServersPending}
+                                >
+                                    <option value={0} disabled>
+                                        Select a server
                                     </option>
-                                ))}
-                            </select>
+                                    {servers.data.map((server, index) => (
+                                        <option key={index} value={server.id}>
+                                            {server.hostname}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <select
+                                    id="server_id"
+                                    className="mt-1 px-3 block h-[40px] w-full rounded-md border-2 focus:border-primary"
+                                    value={domain.server_id}
+                                    onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
+                                    disabled={isFetchServersPending}
+                                >
+                                    <option value={0} disabled>
+                                        No available servers in project
+                                    </option>{" "}
+                                </select>
+                            )}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="port" className="block text-sm font-medium text-foreground">

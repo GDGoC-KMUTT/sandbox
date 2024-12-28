@@ -4,6 +4,8 @@ import DomainLoading from "../loader/DomainLoading"
 import DomainSettingModal from "../modal/DomainSettingModal"
 import { useState } from "react"
 import { Domain } from "../../types/domain"
+import { TrashIcon } from "@heroicons/react/24/solid"
+import DeleteDomainModal from "../modal/DeleteDomainModal"
 
 interface IDomainList {
     projectId: string
@@ -15,7 +17,7 @@ const ServerTag = ({ hostname }: { hostname: string | null }) => {
 
 const DomainList: React.FC<IDomainList> = ({ projectId }) => {
     const { data: domains, isLoading } = useFetchDomains(projectId)
-    const [activeModal, setActiveModal] = useState<"dns" | "webproxy" | null>(null)
+    const [activeModal, setActiveModal] = useState<string | null>(null)
     const [selectedDns, setSelectedDns] = useState<Domain>()
     const handleCloseModal = () => {
         setActiveModal(null)
@@ -25,7 +27,7 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
         return <DomainLoading />
     }
     if (!domains || !domains.data) {
-        return <div>No domains available</div>
+        return <div className="text-center my-[100px]">No domains available</div>
     }
     return (
         <div className="w-full">
@@ -40,13 +42,7 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
                 </thead>
                 <tbody>
                     {domains?.data.map((domain, index) => (
-                        <tr
-                            key={index}
-                            onClick={() => {
-                                setSelectedDns(domain)
-                                setActiveModal("dns")
-                            }}
-                        >
+                        <tr key={index}>
                             <td className="px-4 py-2">{domain.hostname}</td>
                             <td className="px-4 py-2">{domain.dnstype || "*"}</td>
                             {domain.service === "Web Proxy" ? (
@@ -60,19 +56,35 @@ const DomainList: React.FC<IDomainList> = ({ projectId }) => {
                                     <td className="px-4 py-2">10.2.50.6</td>
                                 </>
                             )}
+
                             <td className="flex justify-end p-4 pr-6">
+                                <div className="p-1 mr-6 hover:bg-form rounded-full cursor-pointer">
+                                    <TrashIcon
+                                        className="h-[20px] w-[20px]"
+                                        onClick={() => {
+                                            setSelectedDns(domain)
+                                            setActiveModal("delete")
+                                        }}
+                                    />
+                                </div>
                                 <div className="p-1 hover:bg-form rounded-full cursor-pointer">
-                                    <PencilIcon className="h-[20px] w-[20px]" />
+                                    <PencilIcon
+                                        className="h-[20px] w-[20px]"
+                                        onClick={() => {
+                                            setSelectedDns(domain)
+                                            setActiveModal("edit")
+                                        }}
+                                    />
                                 </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            {activeModal === "dns" && selectedDns && <DomainSettingModal onClose={handleCloseModal} projectId={projectId} domain={selectedDns} />}
-            {/* {activeModal === "webproxy" && selectedDns && (
-                <WebProxySettingModal onClose={handleCloseModal} projectId={projectId} domain={selectedDns} />
-            )} */}
+            {activeModal === "edit" && selectedDns && <DomainSettingModal onClose={handleCloseModal} projectId={projectId} domain={selectedDns} />}
+            {activeModal === "delete" && selectedDns && (
+                <DeleteDomainModal onClose={handleCloseModal} projectId={projectId} domainId={selectedDns.id} />
+            )}
         </div>
     )
 }

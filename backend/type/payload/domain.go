@@ -26,6 +26,10 @@ type EditWebProxy struct {
 	Port     *int    `json:"port"`
 }
 
+type DeleteDomain struct {
+	Id *int `json:"id"`
+}
+
 type Domain struct {
 	Id       *uint64       `json:"id"`
 	Hostname *string       `json:"hostname"`
