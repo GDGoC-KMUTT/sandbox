@@ -36,12 +36,16 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	profileGroup.Get("info", profileHandler.HandleInfoGet)
 
 	projectGroup := api.Group("project", middleware.Jwt())
+	projectGroup.Get("yo", projectHandler.HandleGetUsers)
+
 	projectGroup.Get("list", projectHandler.HandleProjectListGet)
-	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
-	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
 	projectGroup.Patch("edit", projectHandler.HandleEditProject)
+	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Delete("deleteuser", projectHandler.HandleDeleteUser)
+
+	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
+	projectGroup.Get(":projectId/suggestions", projectHandler.HandleGetUsers)
 
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")

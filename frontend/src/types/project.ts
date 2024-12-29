@@ -30,6 +30,14 @@ export interface AddUserPayload {
     email: string
     project_id: number
 }
+export interface GetUserPayload {
+    project_id: number
+}
+export interface GetUserResponse {
+    success: boolean
+    data: UserAvatar[]
+}
+
 export interface DeleteUserPayload {
     email: string
     project_id: number

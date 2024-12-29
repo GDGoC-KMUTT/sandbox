@@ -7,6 +7,7 @@ import useEditProject from "../../hooks/useEditProject"
 import { useQueryClient } from "@tanstack/react-query"
 import useAddUser from "../../hooks/useAddUser"
 import useDeleteUser from "../../hooks/useDeleteUser"
+import useFetchUsers from "../../hooks/useFetchUsers"
 
 export interface CreateProjectModalProps {
     projectId: string
@@ -15,6 +16,8 @@ export interface CreateProjectModalProps {
 
 const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, projectId }) => {
     const { data, isLoading, refetch } = useFetchProjectInfo(projectId || "0")
+    const { data: users, isLoading: isLoadingUsers, refetch: refetchUsers } = useFetchUsers(projectId)
+
     const queryClient = useQueryClient()
 
     const { mutate: editProject, isPending: isEditProject } = useEditProject()
@@ -42,6 +45,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                             queryKey: ["projects", projectId],
                         })
                         refetch()
+                        refetchUsers()
                         setCollaborators([...collaborators, { email: newCollaborator, photo_url: "" }]) // ! Will fix this, it should fetch photoUrl from addedUser
                         setNewCollaborator("")
                     },
@@ -65,6 +69,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                         queryKey: ["projects", projectId],
                     })
                     refetch()
+                    refetchUsers()
 
                     setCollaborators(collaborators.filter((collab) => collab.email !== collaborator))
                 },
@@ -177,7 +182,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                             Collaborator
                         </label>
                         <div className="flex items-center mb-2">
-                            <input
+                            {/* <input
                                 type="text"
                                 id="collaborators"
                                 className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
@@ -185,7 +190,23 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                 onChange={(e) => setNewCollaborator(e.target.value)}
                                 disabled={isEditProject}
                                 placeholder="type email here"
-                            />
+                            /> */}
+                            <select
+                                id="collaborators"
+                                value={newCollaborator}
+                                onChange={(e) => setNewCollaborator(e.target.value)}
+                                disabled={isLoadingUsers}
+                                className="mt-1 block h-[40px] px-3 w-full rounded-md border-2 focus:border-primary"
+                            >
+                                <option>Select user to add</option>
+                                {users?.data.map((user, index) => {
+                                    return (
+                                        <option key={index} value={user.email} className="flex items-center space-x-2">
+                                            {user.email}
+                                        </option>
+                                    )
+                                })}
+                            </select>
                             <button
                                 onClick={handleAddCollaborator}
                                 className="ml-2 px-3 py-1 bg-primary text-white rounded-md"
