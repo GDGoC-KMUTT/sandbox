@@ -12,11 +12,13 @@ import { Cog6ToothIcon } from "@heroicons/react/24/solid"
 import ProjectSettingModal from "../../../../components/modal/ProjectSettingModal"
 import TabBodyLoading from "../../../../components/loader/TabBodyLoading"
 import ProjectHeaderLoading from "../../../../components/loader/ProjectHeaderLoading"
+import { TrashIcon } from "@heroicons/react/24/solid"
+import DeleteProjectModal from "../../../../components/modal/DeleteProjectModal"
 
 const Index = () => {
     const { project: projectId } = useParams()
     const { data, isLoading } = useFetchProjectInfo(projectId || "0")
-    const [activeModal, setActiveModal] = useState<"server" | "domain" | "setting" | null>(null)
+    const [activeModal, setActiveModal] = useState<"server" | "domain" | "setting" | "deleteProject" | null>(null)
 
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
@@ -54,6 +56,9 @@ const Index = () => {
             <div className="flex h-full justify-end items-center">
                 <AvatarList users={users} position="rb" />
                 <div className="ml-[15px]">
+                    <TrashIcon className="w-6 cursor-pointer" onClick={() => setActiveModal("deleteProject")} />
+                </div>
+                <div className="ml-[15px]">
                     <Cog6ToothIcon className="w-7 cursor-pointer" onClick={() => setActiveModal("setting")} />
                 </div>
             </div>
@@ -67,6 +72,7 @@ const Index = () => {
             {activeModal === "server" && <CreateServerModal projectId={projectId} onClose={handleCloseModal} />}
             {activeModal === "domain" && <CreateDomainModal projectId={projectId} onClose={handleCloseModal} />}
             {activeModal === "setting" && <ProjectSettingModal projectId={projectId} onClose={handleCloseModal} />}
+            {activeModal === "deleteProject" && <DeleteProjectModal projectId={projectId} onClose={handleCloseModal} />}
         </>
     )
 }

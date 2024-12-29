@@ -46,6 +46,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 
 	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
 	projectGroup.Get(":projectId/suggestions", projectHandler.HandleGetUsers)
+	projectGroup.Delete(":projectId/delete", projectHandler.HandleDeleteProject)
 
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")
