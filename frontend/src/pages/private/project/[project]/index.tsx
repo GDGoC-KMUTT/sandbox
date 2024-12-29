@@ -31,7 +31,7 @@ const Index = () => {
         },
         {
             label: "DNS Manager",
-            content: <DomainList projectId={projectId} />,
+            content: <DomainList projectId={projectId} projectDomain={data?.data.domain || ""} />,
             newFunction: () => setActiveModal("domain"),
         },
     ]
