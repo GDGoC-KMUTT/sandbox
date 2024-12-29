@@ -1,27 +1,37 @@
 import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
+import useCreateProject from "../../hooks/useCreateProject"
+import { CreateProjectPayload } from "../../types/project"
 
 export interface CreateProjectModalProps {
-    isOpen: boolean
     onClose: () => void
-    onCreate: (projectName: string, projectDomain: string) => void
-    isLoading: boolean
 }
 
-const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose, onCreate, isLoading }) => {
-    const [projectName, setProjectName] = useState("")
-    const [projectDomain, setProjectDomain] = useState("")
+const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
+    const { mutate: createProject, isPending } = useCreateProject()
+    const [project, setProject] = useState<CreateProjectPayload>({ name: "", domain: "" })
 
     const handleCreate = () => {
-        if (projectName.trim() && projectDomain.trim()) {
-            onCreate(projectName, projectDomain)
-            onClose()
-        } else {
-            alert("Please fill in both fields.")
-        }
+        createProject(
+            { name: project?.name, domain: project?.domain },
+            {
+                onSuccess: () => {
+                    onClose()
+                },
+                onError: (e) => {
+                    alert(e)
+                    onClose()
+                },
+            }
+        )
+    }
+    const handleInputChange = (key: string, value: string | number) => {
+        setProject((prev) => ({
+            ...prev,
+            [key]: value,
+        }))
     }
 
-    if (!isOpen) return null
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
             <div className="bg-background rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
@@ -32,11 +42,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                     </label>
                     <input
                         type="text"
-                        id="projectName"
+                        id="name"
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        disabled={isLoading}
+                        value={project.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                        disabled={isPending}
                     />
                 </div>
                 <div className="mb-4">
@@ -45,11 +55,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                     </label>
                     <div className="flex items-center">
                         <input
-                            id="projectDescription"
+                            id="domain"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[50%] rounded-md border-2 focus:border-primary"
-                            value={projectDomain}
-                            onChange={(e) => setProjectDomain(e.target.value)}
-                            disabled={isLoading}
+                            value={project.domain}
+                            onChange={(e) => handleInputChange("domain", e.target.value)}
+                            disabled={isPending}
                         ></input>
                         <p className="text-lg">.scnn.me</p>
                     </div>
@@ -58,12 +68,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                     <button
                         className="px-6 py-2 bg-background border-2 border-form hover:bg-form hover:border-form text-foreground"
                         onClick={onClose}
-                        disabled={isLoading}
+                        disabled={isPending}
                     >
                         Cancel
                     </button>
-                    <button className="px-6" onClick={handleCreate} disabled={isLoading}>
-                        {isLoading ? <DotLoading /> : "Create"}
+                    <button className="px-6" onClick={handleCreate} disabled={isPending}>
+                        {isPending ? <DotLoading /> : "Create"}
                     </button>
                 </div>
             </div>
@@ -72,3 +82,4 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
 }
 
 export default CreateProjectModal
+
