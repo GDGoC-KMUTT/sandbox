@@ -179,18 +179,9 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                 ) : (
                     <div className="mb-4">
                         <label htmlFor="collaborators" className="block text-sm font-medium text-foreground">
-                            Collaborator
+                            Collaborators
                         </label>
                         <div className="flex items-center mb-2">
-                            {/* <input
-                                type="text"
-                                id="collaborators"
-                                className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
-                                value={newCollaborator}
-                                onChange={(e) => setNewCollaborator(e.target.value)}
-                                disabled={isEditProject}
-                                placeholder="type email here"
-                            /> */}
                             <select
                                 id="collaborators"
                                 value={newCollaborator}

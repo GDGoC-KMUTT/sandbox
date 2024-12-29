@@ -1,4 +1,4 @@
-package projectEndpoint
+package domainEndpoint
 
 import (
 	"sandbox-skeleton/type/common"
@@ -16,7 +16,7 @@ func (r *Handler) HandleDeleteDomain(c *fiber.Ctx) error {
 	l := c.Locals("l").(*jwt.Token).Claims.(*common.UserClaims)
 
 	// Parse Body
-	body := new(payload.DeleteDomain)
+	body := new(payload.DeleteDomainPayload)
 	if err := c.BodyParser(body); err != nil {
 		return gut.Err(false, "unable to parse body", err)
 	}

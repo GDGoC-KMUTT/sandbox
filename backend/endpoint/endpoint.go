@@ -66,7 +66,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	domainGroup.Post("create/webproxy", domainHandler.HandleCreateWebProxy)
 	domainGroup.Patch("edit/dns", domainHandler.HandleEditDnsRecord)
 	domainGroup.Patch("edit/webproxy", domainHandler.HandleEditWebProxy)
-	domainGroup.Delete("delete", projectHandler.HandleDeleteDomain)
+	domainGroup.Delete("delete", domainHandler.HandleDeleteDomain)
 
 	// * not found
 	app.Use(HandleNotFound)
