@@ -29,12 +29,12 @@ const Login = () => {
                 </div>
             </div>
             <div className="my-4">
-                <Link to={`${backendURL}/api/public/login/redirect`}>
+                <a href={`${backendURL}/api/public/login/redirect`}>
                     <button className="w-[300px] h-[50px] px-6 py-2  flex space-x-2 items-center justify-center text-background bg-white bg-opacity-30 rounded-lg hover:bg-opacity-50 hover:border-none active:border-none">
                         <h2 className="font-bold">Login</h2>
                         <ChevronRightIcon width={"25px"} height={"25px"} />
                     </button>
-                </Link>
+                </a>
             </div>
         </div>
     )
