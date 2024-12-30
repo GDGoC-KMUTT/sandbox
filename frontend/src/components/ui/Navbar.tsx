@@ -15,7 +15,9 @@ const Navbar = () => {
                 <div className="w-[25px] cursor-pointer bg-transparent rounded-full mr-4" onClick={goBack}>
                     <ArrowLeftIcon className="text-foreground" />
                 </div>
-                <img src={logo2} className="w-[40px] h-[40px]" />
+                <div onClick={() => navigate("/project")} className="cursor-pointer">
+                    <img src={logo2} className="w-[40px] h-[40px]" />
+                </div>
             </div>
             <button onClick={logout}>Logout</button>
         </nav>
