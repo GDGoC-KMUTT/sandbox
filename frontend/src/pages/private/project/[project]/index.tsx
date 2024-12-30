@@ -48,7 +48,7 @@ const Index = () => {
     ) : (
         <>
             <div className={"flex flex-col gap-[10px]"}>
-                <h2>{data?.data.name}</h2>
+                <h2 className="text-2xl">{data?.data.name}</h2>
                 <div className={"flex gap-2"}>
                     <h3>{data?.data.domain}</h3>
                 </div>

@@ -11,7 +11,7 @@ const Index = () => {
 
     const headerContent = (
         <>
-            <h2>Project</h2>
+            <h2 className="text-2xl">Projects</h2>
             <button onClick={() => setIsModalOpen(true)}>+ New</button>
             {isModalOpen && <CreateProjectModal onClose={() => setIsModalOpen(false)} />}
         </>

@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import useAddUser from "../../hooks/useAddUser"
 import useDeleteUser from "../../hooks/useDeleteUser"
 import useFetchUsers from "../../hooks/useFetchUsers"
+import avatar from "../../assets/avatar.jpg"
 
 export interface CreateProjectModalProps {
     projectId: string
@@ -211,9 +212,9 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                 <li key={index} className="flex items-center justify-between bg-background rounded-md p-1">
                                     <div className="flex items-center space-x-2">
                                         <img
-                                            src={collaborator.photo_url || ""}
+                                            src={collaborator.photo_url || avatar}
                                             alt={collaborator.email}
-                                            className={`w-[30px] h-[30px] rounded-full object-cover  ${index !== 0 ? "-ml-2" : ""}`}
+                                            className={`w-[30px] h-[30px] rounded-full object-cover`}
                                         />
                                         <p className="text-sm font-medium">{collaborator.email}</p>
                                     </div>

@@ -9,9 +9,9 @@ const ProjectCard: React.FC<Project> = ({ project_id, name, domain, users }) => 
             className="flex flex-col justify-center gap-[10px] min-w-[300px] min-h-[150px] p-[20px] m-[20px] rounded-2xl bg-background shadow-card cursor-pointer"
             onClick={() => navigate(`/project/${project_id}`)}
         >
-            <h4>{name}</h4>
+            <h4 className="text-xl">{name}</h4>
             <div className="flex gap-2">
-                <p>{domain}</p>
+                <p>{domain}.scnn.me</p>
             </div>
             <AvatarList users={users} />
         </div>
