@@ -44,6 +44,9 @@ func (r *Handler) HandleDeleteDomain(c *fiber.Ctx) error {
 	if tx := r.database.Delete(&domain); tx.Error != nil {
 		return gut.Err(false, "Failed to delete server record", tx.Error)
 	}
+	if err := r.HandleGenerateFile(c); err != nil {
+		return gut.Err(false, "Failed to generate DNS file", err)
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(response.Success("Domain removed from the project"))
 }

@@ -20,6 +20,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 
 	// * api
 	api := app.Group("api")
+	// api.Get("/file", domainHandler.HandleGenerateFile)
 
 	// * sample group
 	sampleGroup := api.Group("sample")

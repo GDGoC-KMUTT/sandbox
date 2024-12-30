@@ -45,8 +45,7 @@ const DomainList: React.FC<IDomainList> = ({ projectId, projectDomain }) => {
                     {domains?.data.map((domain, index) => (
                         <tr key={index}>
                             <td className="px-4 py-2">
-                                <p> {domain.hostname}</p>
-                                <p className="text-sm">.{projectDomain}.scnn.me</p>
+                                {projectDomain}-{domain.hostname}.scnn.me
                             </td>
                             <td className="px-4 py-2">{domain.dnstype || "*"}</td>
                             {domain.service === "Web Proxy" ? (

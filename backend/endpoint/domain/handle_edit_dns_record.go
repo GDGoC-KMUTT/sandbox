@@ -62,5 +62,8 @@ func (r *Handler) HandleEditDnsRecord(c *fiber.Ctx) error {
 	if err := r.database.Save(domain).Error; err != nil {
 		return gut.Err(false, "Failed to update domain", err)
 	}
+	if err := r.HandleGenerateFile(c); err != nil {
+		return gut.Err(false, "Failed to generate DNS file", err)
+	}
 	return c.Status(fiber.StatusCreated).JSON(response.Success(domain))
 }

@@ -27,7 +27,7 @@ func (r *Handler) HandleDomainListGet(c *fiber.Ctx) error {
 	if tx := r.database.First(&userProject, "project_id = ? AND user_id = ?", projectId, l.UserId); tx.Error != nil {
 		return gut.Err(false, "No permission")
 	}
-	// Fetch servers for the project
+	// Fetch domain for the project
 	var domains []table.Domain
 	if tx := r.database.Where("project_id = ?", projectId).Find(&domains); tx.Error != nil {
 		return tx.Error

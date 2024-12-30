@@ -5,6 +5,7 @@ import useCreateDnsRecord from "../../hooks/useCreateDnsRecord"
 import useCreateWebProxy from "../../hooks/useCreateWebProxy"
 import { useQueryClient } from "@tanstack/react-query"
 import useFetchServers from "../../hooks/useFetchServers"
+import useFetchProjectInfo from "../../hooks/useFetchProjectInfo"
 
 export interface ICreateDomainModal {
     onClose: () => void
@@ -15,6 +16,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
     const { mutate: createDnsRecord, isPending: isCreateDnsRecordPending } = useCreateDnsRecord()
     const { mutate: createWebProxy, isPending: isCreateWebProxyPending } = useCreateWebProxy()
     const { data: servers, isLoading: isFetchServersPending } = useFetchServers(projectId)
+    const { data: project, isLoading: isFetchProjectPending } = useFetchProjectInfo(projectId)
     const [domain, setDomain] = useState<CreateDomainPayload>({
         hostname: "",
         dnstype: "A",
@@ -33,7 +35,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
         )
     }
 
-    const isAnyPending = isCreateDnsRecordPending || isCreateWebProxyPending
+    const isAnyPending = isCreateDnsRecordPending || isCreateWebProxyPending || isFetchProjectPending
 
     const handleInputChange = (key: keyof CreateDomainPayload, value: string | number) => {
         setDomain((prev) => ({
@@ -107,10 +109,11 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
             <div className="bg-background rounded-md shadow-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
                 <h2 className="text-xl font-semibold mb-4">Create New DNS</h2>
                 <div className="mb-4">
-                    <label htmlFor="projectDescription" className="block text-sm font-medium text-foreground">
+                    <label htmlFor="hostname" className="block text-sm font-medium text-foreground">
                         Hostname
                     </label>
                     <div className="flex items-center">
+                        <p className="text-lg mr-1">{project?.data.domain}- </p>
                         <input
                             id="hostname"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[70%] rounded-md border-2 focus:border-primary"

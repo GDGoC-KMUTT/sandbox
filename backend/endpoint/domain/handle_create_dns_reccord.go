@@ -54,5 +54,9 @@ func (r *Handler) HandleCreateDnsRecord(c *fiber.Ctx) error {
 		return gut.Err(false, "Failed to create server", err)
 	}
 
+	if err := r.HandleGenerateFile(c); err != nil {
+		return gut.Err(false, "Failed to generate DNS file", err)
+	}
+
 	return c.Status(fiber.StatusCreated).JSON(response.Success(domain))
 }

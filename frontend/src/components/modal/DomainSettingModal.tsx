@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import useEditDnsRecord from "../../hooks/useEditDnsRecord"
 import useFetchServers from "../../hooks/useFetchServers"
 import useEditWebProxy from "../../hooks/useEditWebProxy"
+import useFetchProjectInfo from "../../hooks/useFetchProjectInfo"
 
 export interface IEditDomainModal {
     onClose: () => void
@@ -15,6 +16,7 @@ export interface IEditDomainModal {
 const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, domain }) => {
     const { mutate: editDnsRecord, isPending: isEditDnsRecordPending } = useEditDnsRecord()
     const { mutate: editWebProxy, isPending: isEditWebProxyPending } = useEditWebProxy()
+    const { data: project, isLoading: isFetchProjectPending } = useFetchProjectInfo(projectId)
 
     const { data: servers, isLoading: isFetchServersPending } = useFetchServers(projectId)
 
@@ -28,7 +30,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
         port: domain.port || 0,
         service: domain.service || "",
     })
-    const isAnyPending = isEditDnsRecordPending || isEditWebProxyPending
+    const isAnyPending = isEditDnsRecordPending || isEditWebProxyPending || isFetchProjectPending
 
     const handleInputChange = (key: keyof CreateDomainPayload, value: string | number) => {
         setDomainValue((prev) => ({
@@ -102,6 +104,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                         Hostname
                     </label>
                     <div className="flex items-center">
+                        <p className="text-lg mr-1">{project?.data.domain}- </p>
                         <input
                             id="hostname"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[70%] rounded-md border-2 focus:border-primary"
@@ -177,22 +180,36 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                             <label htmlFor="server" className="block text-sm font-medium text-foreground">
                                 Server
                             </label>
-                            <select
-                                id="server_id"
-                                className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
-                                value={domainValue.server_id}
-                                onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
-                                disabled={isFetchServersPending}
-                            >
-                                <option value={0} disabled>
-                                    Select a server
-                                </option>
-                                {servers?.data.map((server, index) => (
-                                    <option key={index} value={server.id}>
-                                        {server.hostname}
+                            {servers && servers.data && servers.data.length > 0 ? (
+                                <select
+                                    id="server_id"
+                                    className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
+                                    value={domainValue.server_id}
+                                    onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
+                                    disabled={isFetchServersPending}
+                                >
+                                    <option value={0} disabled>
+                                        Select a server
                                     </option>
-                                ))}
-                            </select>
+                                    {servers?.data.map((server, index) => (
+                                        <option key={index} value={server.id}>
+                                            {server.hostname}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <select
+                                    id="server_id"
+                                    className="mt-1 px-3 block h-[40px] w-full rounded-md border-2 focus:border-primary"
+                                    value={domainValue.server_id}
+                                    onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
+                                    disabled={isFetchServersPending}
+                                >
+                                    <option value={0} disabled>
+                                        No available servers in project
+                                    </option>{" "}
+                                </select>
+                            )}
                         </div>
                         <div className="mb-4">
                             <label htmlFor="port" className="block text-sm font-medium text-foreground">
