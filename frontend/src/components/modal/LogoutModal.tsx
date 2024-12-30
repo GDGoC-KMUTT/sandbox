@@ -19,7 +19,9 @@ const LogoutModal: React.FC<ILogoutModal> = ({ onClose, onLogout }) => {
                     >
                         Cancel
                     </button>
-                    <button className="px-6 text-white bg-red-400 hover:bg-red-600" onClick={onLogout}>Logout</button>
+                    <button className="px-6 text-white bg-red-400 hover:bg-red-600" onClick={onLogout}>
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>
