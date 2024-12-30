@@ -5,6 +5,7 @@ import (
 	"sandbox-skeleton/common/database"
 	"sandbox-skeleton/common/fiber"
 	"sandbox-skeleton/common/fiber/middleware"
+	"sandbox-skeleton/common/incus"
 	"sandbox-skeleton/endpoint"
 	domainEndpoint "sandbox-skeleton/endpoint/domain"
 	profileEndpoint "sandbox-skeleton/endpoint/profile"
@@ -23,6 +24,7 @@ func main() {
 			database.Init,
 			fiber.Init,
 			middleware.Init,
+			incus.Init,
 			sampleEndpoint.Handle,
 			publicEndpoint.Handle,
 			profileEndpoint.Handle,

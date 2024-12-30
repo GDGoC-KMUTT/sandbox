@@ -20,6 +20,7 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 
 	// * api
 	api := app.Group("api")
+	// api.Get("/file", domainHandler.HandleGenerateFile)
 
 	// * sample group
 	sampleGroup := api.Group("sample")
@@ -36,21 +37,38 @@ func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *samp
 	profileGroup.Get("info", profileHandler.HandleInfoGet)
 
 	projectGroup := api.Group("project", middleware.Jwt())
+	projectGroup.Get("yo", projectHandler.HandleGetUsers)
+
 	projectGroup.Get("list", projectHandler.HandleProjectListGet)
-	projectGroup.Post("adduser", projectHandler.HandleAddUser)
 	projectGroup.Post("create", projectHandler.HandleCreateProject)
+	projectGroup.Patch("edit", projectHandler.HandleEditProject)
+	projectGroup.Post("adduser", projectHandler.HandleAddUser)
+	projectGroup.Delete("deleteuser", projectHandler.HandleDeleteUser)
+
+	projectGroup.Get(":projectId", projectHandler.HandleProjectGet)
+	projectGroup.Get(":projectId/suggestions", projectHandler.HandleGetUsers)
+	projectGroup.Delete(":projectId/delete", projectHandler.HandleDeleteProject)
 
 	// * server group
 	serverGroup := projectGroup.Group(":projectId/server")
 	serverGroup.Post("create", serverHandler.HandleCreateServer)
+
 	serverGroup.Get("list", serverHandler.HandleServerListGet)
+	serverGroup.Get("instances", serverHandler.HandleGetInstances)
+
 	serverGroup.Get(":serverId", serverHandler.HandleServerGet)
+	serverGroup.Delete(":serverId/delete", serverHandler.HandleDeleteServer)
+
+	// incus
 
 	// * domain group
 	domainGroup := projectGroup.Group(":projectId/domain")
-	domainGroup.Get("/list", domainHandler.HandleDomainListGet)
-	domainGroup.Post("/create/dns", domainHandler.HandleCreateDnsRecord)
-	domainGroup.Post("/create/webproxy", domainHandler.HandleCreateWebProxy)
+	domainGroup.Get("list", domainHandler.HandleDomainListGet)
+	domainGroup.Post("create/dns", domainHandler.HandleCreateDnsRecord)
+	domainGroup.Post("create/webproxy", domainHandler.HandleCreateWebProxy)
+	domainGroup.Patch("edit/dns", domainHandler.HandleEditDnsRecord)
+	domainGroup.Patch("edit/webproxy", domainHandler.HandleEditWebProxy)
+	domainGroup.Delete("delete", domainHandler.HandleDeleteDomain)
 
 	// * not found
 	app.Use(HandleNotFound)

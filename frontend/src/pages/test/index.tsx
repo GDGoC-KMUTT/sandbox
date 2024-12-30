@@ -9,7 +9,7 @@ const fetchPingPong = async () => {
 }
 
 const Index = () => {
-    const [counter, setCounter] = useAtom(counterAtom)
+    const [counter] = useAtom(counterAtom)
     const { data, error, isLoading } = useQuery({
         queryKey: ["pingpong"],
         queryFn: fetchPingPong,

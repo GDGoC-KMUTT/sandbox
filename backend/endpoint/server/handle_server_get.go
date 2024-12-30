@@ -39,14 +39,22 @@ func (r *Handler) HandleServerGet(c *fiber.Ctx) error {
 		return tx.Error
 	}
 
+	instance, err := r.HandleGetInstance(c, *server.Hostname)
+	if err != nil {
+		return gut.Err(false, "Failed to fetch instance details", err)
+	}
+
 	mappedServer := payload.Server{
-		Hostname: server.Hostname,
-		IP:       server.IP,
+		Id:       server.Id,
+		Hostname: &instance.Hostname,
+		IP:       &instance.Ip,
 		OS:       server.OS,
 		VCPU:     server.VCPU,
 		Memory:   server.Memory,
 		Username: server.Username,
 		Password: server.Password,
+		Storage:  server.Storage,
+		Status:   &instance.Status,
 	}
 
 	return c.JSON(response.Success(mappedServer))

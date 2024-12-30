@@ -15,6 +15,7 @@ import (
 func (r *Handler) HandleCreateWebProxy(c *fiber.Ctx) error {
 	// Parse web proxy details from the request body
 	body := new(payload.CreateWebProxy)
+
 	if err := c.BodyParser(body); err != nil {
 		return gut.Err(false, "Unable to parse body", err)
 	}
@@ -61,6 +62,7 @@ func (r *Handler) HandleCreateWebProxy(c *fiber.Ctx) error {
 		ServerId:  serverIdPtr,
 		Service:   &dnsService,
 		ProjectId: &projectIDUint64,
+		Port:      body.Port,
 	}
 
 	// Save the record to the database

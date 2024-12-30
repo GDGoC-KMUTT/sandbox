@@ -67,6 +67,13 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
+input {
+    background: hsl(var(--form));
+}
+
+select {
+    background: hsl(var(--form));
+}
 @media (prefers-color-scheme: light) {
     :root {
         color: hsl(var(--foreground));

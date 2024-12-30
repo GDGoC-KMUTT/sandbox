@@ -40,15 +40,30 @@ func (r *Handler) HandleCreateServer(c *fiber.Ctx) error {
 		return gut.Err(false, "User does not have access to this project", err)
 	}
 
+	instanceConfig := &payload.CreateIncusInstancePayload{
+		Hostname: body.Hostname,
+		Username: body.Username,
+		Password: body.Password,
+		Os:       body.OS,
+		Vcpu:     body.VCPU,
+		Memory:   body.Memory,
+		Storage:  body.Storage,
+	}
+
+	instance, err := r.HandleCreateInstance(c, instanceConfig)
+	if err != nil {
+		return gut.Err(false, "Failed to create instance", err)
+	}
+
 	// Create a new server instance
 	server := &table.Server{
-		Hostname:  body.Hostname,
-		Username:  body.Username,
-		Password:  body.Password,
-		IP:        body.Ip,
-		OS:        body.Os,
-		VCPU:      body.V_cpu,
-		Memory:    body.Memory,
+		Hostname:  &instance.Hostname,
+		Username:  &instance.Username,
+		Password:  &instance.Password,
+		OS:        &instance.Os,
+		VCPU:      &instance.Vcpu,
+		Memory:    &instance.Memory,
+		Storage:   &instance.Storage,
 		ProjectId: &projectIDUint64,
 	}
 
