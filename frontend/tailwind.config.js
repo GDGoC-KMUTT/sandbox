@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
     theme: {
@@ -27,9 +28,6 @@ export default {
                 nav: "0px 4px 8px rgba(0, 0, 0, 0.12)",
                 card: "0px 4px 8px rgba(0, 0, 0, 0.12)",
             },
-            backgroundImage: {
-                'login': "url('src/assets/login_background.png')",
-            }
         },
         fontFamily: {
             sans: ['"Ubuntu"', '"Noto Sans Thai"', "sans-serif", "Source Code Pro"],

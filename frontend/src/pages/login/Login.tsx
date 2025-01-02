@@ -4,6 +4,7 @@ import { useAtom } from "jotai"
 import { useEffect } from "react"
 import logo from "../../assets/logo1.png"
 import { ChevronRightIcon } from "@heroicons/react/24/outline"
+import logoBackground from "../../assets/login_background.png"
 
 const Login = () => {
     const backendURL = import.meta.env.VITE_BACKEND_URL
@@ -18,7 +19,12 @@ const Login = () => {
     }, [authState.isAuthenticated, navigate])
 
     return (
-        <div className="w-full h-screen bg-login bg-cover bg-center flex flex-col justify-center items-start px-14">
+        <div
+            className={`fixed w-full h-screen bg-cover bg-center flex flex-col justify-center items-start px-14`}
+            style={{
+                backgroundImage: `url(${logoBackground})`,
+            }}
+        >
             <div className="flex items-center space-x-4">
                 <div className="w-[100px] h-[100px]">
                     <img src={logo} alt="Logo" />

@@ -191,13 +191,15 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                 className="mt-1 block h-[40px] px-3 w-full rounded-md border-2 focus:border-primary"
                             >
                                 <option>Select user to add</option>
-                                {users?.data.map((user, index) => {
-                                    return (
-                                        <option key={index} value={user.email} className="flex items-center space-x-2">
-                                            {user.email}
-                                        </option>
-                                    )
-                                })}
+                                {users?.data &&
+                                    users?.data.length > 0 &&
+                                    users?.data.map((user, index) => {
+                                        return (
+                                            <option key={index} value={user.email} className="flex items-center space-x-2">
+                                                {user.email}
+                                            </option>
+                                        )
+                                    })}
                             </select>
                             <button
                                 onClick={handleAddCollaborator}
@@ -215,6 +217,9 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                             src={collaborator.photo_url || avatar}
                                             alt={collaborator.email}
                                             className={`w-[30px] h-[30px] rounded-full object-cover`}
+                                            onError={(e) => {
+                                                e.currentTarget.src = avatar
+                                            }}
                                         />
                                         <p className="text-sm font-medium">{collaborator.email}</p>
                                     </div>

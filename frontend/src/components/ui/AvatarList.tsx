@@ -15,7 +15,7 @@ const AvatarList: React.FC<AvatarListProps> = ({ users, position = "lb" }) => {
     const [hoveredUser, setHoveredUser] = useState<string | null>(null)
 
     const positionClasses = {
-        l: "right-full top-1/2 transform -translate-y-1/2",
+        l: "right-full top-1/2 tansform -translate-y-1/2",
         r: "left-full top-1/2 transform -translate-y-1/2",
         t: "bottom-full left-1/2 transform -translate-x-1/2",
         b: "top-full left-1/2 transform -translate-x-1/2",
