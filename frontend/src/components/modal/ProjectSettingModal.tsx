@@ -9,6 +9,8 @@ import useAddUser from "../../hooks/useAddUser"
 import useDeleteUser from "../../hooks/useDeleteUser"
 import useFetchUsers from "../../hooks/useFetchUsers"
 import avatar from "../../assets/avatar.jpg"
+import NotFound from "../../configs/pages/NotFound"
+import { toast } from "sonner"
 
 export interface CreateProjectModalProps {
     projectId: string
@@ -33,7 +35,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
 
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
-        return <div>Error: Invalid project ID</div>
+        return <NotFound />
     }
     const handleAddCollaborator = () => {
         const emailExists = collaborators.some((collaborator) => collaborator.email === newCollaborator)
@@ -50,14 +52,13 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                         setCollaborators([...collaborators, { email: newCollaborator, photo_url: "" }]) // ! Will fix this, it should fetch photoUrl from addedUser
                         setNewCollaborator("")
                     },
-                    onError: (e) => {
-                        alert(e)
+                    onError: () => {
                         onClose()
                     },
                 }
             )
         } else if (emailExists) {
-            alert("This collaborator is already added.")
+            toast.error("This user already existed in the project")
         }
     }
 
@@ -74,8 +75,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
 
                     setCollaborators(collaborators.filter((collab) => collab.email !== collaborator))
                 },
-                onError: (e) => {
-                    alert(e)
+                onError: () => {
                     onClose()
                 },
             }
@@ -90,16 +90,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                 project_id: projectIdNumber,
             },
             {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["projects", projectId],
-                    })
-                    onClose()
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
-                },
+                onSettled: onClose,
             }
         )
     }

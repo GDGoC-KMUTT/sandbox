@@ -6,6 +6,7 @@ import useEditDnsRecord from "../../hooks/useEditDnsRecord"
 import useFetchServers from "../../hooks/useFetchServers"
 import useEditWebProxy from "../../hooks/useEditWebProxy"
 import useFetchProjectInfo from "../../hooks/useFetchProjectInfo"
+import { toast } from "sonner"
 
 export interface IEditDomainModal {
     onClose: () => void
@@ -42,7 +43,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
     const handleCreate = () => {
         if (domainValue.service == "DNS record") {
             if (!domainValue.hostname.trim() || !domainValue.dnstype.trim() || !domainValue.target.trim()) {
-                alert("Please fill in all fields correctly.")
+                toast.warning("Please fill in all fields correctly.")
                 return
             } else {
                 editDnsRecord(
@@ -60,15 +61,12 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                             })
                             onClose()
                         },
-                        onError: (e) => {
-                            alert(e)
-                        },
                     }
                 )
             }
         } else if (domainValue.service == "Web Proxy") {
             if (!domainValue.hostname.trim() || domainValue.server_id == 0 || domainValue.port == 0) {
-                alert("Please fill in all fields correctly.")
+                toast.warning("Please fill in all fields correctly.")
                 return
             } else {
                 editWebProxy(
@@ -85,9 +83,6 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                                 queryKey: ["domains", projectId],
                             })
                             onClose()
-                        },
-                        onError: (e) => {
-                            alert(e)
                         },
                     }
                 )

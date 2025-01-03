@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { ServerResponse } from "../types/server"
 import { toast } from "sonner"
@@ -12,10 +12,13 @@ const deleteProject = async ({ projectId }: { projectId: string }): Promise<Serv
 }
 
 const useDeleteProject = () => {
+    const queryClient = useQueryClient()
+
     return useMutation({
         mutationKey: ["delete-project"],
         mutationFn: deleteProject,
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: "projects" })
             toast.success("Delete server successful")
         },
         onError: () => {

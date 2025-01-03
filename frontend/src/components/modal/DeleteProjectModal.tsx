@@ -18,13 +18,9 @@ const DeleteProjectModal: React.FC<IDeleteModal> = ({ onClose, projectId }) => {
                 projectId: projectId,
             },
             {
-                onSuccess: () => {
+                onSettled: () => {
                     onClose()
                     navigate(`/project`)
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
                 },
             }
         )

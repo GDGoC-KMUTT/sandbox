@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { CreateWebProxy, DomainResponse } from "../types/domain"
 import { toast } from "sonner"
@@ -16,10 +16,15 @@ const createWebProxy = async (webProxyData: CreateWebProxy): Promise<DomainRespo
 }
 
 const useCreateWebProxy = () => {
+    const queryClient = useQueryClient()
+
     return useMutation({
         mutationKey: ["create-webproxy"],
         mutationFn: createWebProxy,
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["domains"],
+            })
             toast.success("Create web proxy successful")
         },
         onError: () => {

@@ -14,6 +14,7 @@ import TabBodyLoading from "../../../../components/loader/TabBodyLoading"
 import ProjectHeaderLoading from "../../../../components/loader/ProjectHeaderLoading"
 import { TrashIcon } from "@heroicons/react/24/solid"
 import DeleteProjectModal from "../../../../components/modal/DeleteProjectModal"
+import NotFound from "../../../../configs/pages/NotFound"
 
 const Index = () => {
     const { project: projectId } = useParams()
@@ -22,7 +23,7 @@ const Index = () => {
 
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
-        return <div>Error: Invalid project ID</div>
+        return <NotFound />
     }
 
     const tabs = [

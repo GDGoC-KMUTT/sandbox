@@ -19,13 +19,9 @@ const DeleteServerModal: React.FC<IDeleteModal> = ({ onClose, projectId, serverI
                 serverId: serverId,
             },
             {
-                onSuccess: () => {
+                onSettled: () => {
                     onClose()
                     navigate(`/project/${projectId}`)
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
                 },
             }
         )

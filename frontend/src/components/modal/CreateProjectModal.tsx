@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
 import useCreateProject from "../../hooks/useCreateProject"
 import { CreateProjectPayload } from "../../types/project"
-import { useQueryClient } from "@tanstack/react-query"
 
 export interface CreateProjectModalProps {
     onClose: () => void
@@ -11,24 +10,9 @@ export interface CreateProjectModalProps {
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
     const { mutate: createProject, isPending } = useCreateProject()
     const [project, setProject] = useState<CreateProjectPayload>({ name: "", domain: "" })
-    const queryClient = useQueryClient()
 
     const handleCreate = () => {
-        createProject(
-            { name: project?.name, domain: project?.domain },
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["projects"],
-                    })
-                    onClose()
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
-                },
-            }
-        )
+        createProject({ name: project.name, domain: project.domain }, { onSettled: onClose })
     }
     const handleInputChange = (key: string, value: string | number) => {
         setProject((prev) => ({

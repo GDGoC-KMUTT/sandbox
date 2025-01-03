@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { CreateServerPayload, ServerResponse } from "../types/server"
 import { toast } from "sonner"
@@ -20,10 +20,15 @@ const createServer = async (serverData: CreateServerPayload): Promise<ServerResp
 }
 
 const useCreateServer = () => {
+    const queryClient = useQueryClient()
+
     return useMutation({
         mutationKey: ["create-server"],
         mutationFn: createServer,
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["servers"],
+            })
             toast.success("Create server successful")
         },
         onError: () => {

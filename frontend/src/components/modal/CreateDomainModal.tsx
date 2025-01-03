@@ -3,9 +3,9 @@ import { DotLoading } from "../loader/DotLoading"
 import { CreateDomainPayload } from "../../types/domain"
 import useCreateDnsRecord from "../../hooks/useCreateDnsRecord"
 import useCreateWebProxy from "../../hooks/useCreateWebProxy"
-import { useQueryClient } from "@tanstack/react-query"
 import useFetchServers from "../../hooks/useFetchServers"
 import useFetchProjectInfo from "../../hooks/useFetchProjectInfo"
+import { toast } from "sonner"
 
 export interface ICreateDomainModal {
     onClose: () => void
@@ -25,7 +25,6 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
         port: 0,
         service: "dns",
     })
-    const queryClient = useQueryClient()
 
     if (isFetchServersPending) {
         return (
@@ -47,7 +46,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
     const handleCreate = () => {
         if (domain.service == "dns") {
             if (!domain.hostname.trim() || !domain.dnstype.trim() || !domain.target.trim()) {
-                alert("Please fill in all fields correctly.")
+                toast.warning("Please fill in all fields correctly")
                 return
             } else {
                 createDnsRecord(
@@ -58,28 +57,21 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                         projectId: projectId,
                     },
                     {
-                        onSuccess: () => {
-                            queryClient.invalidateQueries({
-                                queryKey: ["domains", projectId],
-                            })
-                            onClose()
-                        },
-                        onError: (e) => {
-                            alert(e)
-                        },
+                        onSettled: onClose,
                     }
                 )
             }
         } else if (domain.service == "webProxy") {
             if (!domain.hostname.trim() || domain.server_id == 0 || domain.port == 0) {
-                alert("Please fill in all fields correctly.")
+                toast.warning("Please fill in all fields correctly")
                 return
             } else {
                 const server_id = Number(domain.server_id)
                 const port = Number(domain.port)
 
                 if (isNaN(server_id) || isNaN(port)) {
-                    throw new Error("Invalid server_id or port")
+                    toast.warning("Invalid server or port")
+                    return
                 }
 
                 createWebProxy(
@@ -90,15 +82,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                         projectId: projectId,
                     },
                     {
-                        onSuccess: () => {
-                            queryClient.invalidateQueries({
-                                queryKey: ["domains", projectId],
-                            })
-                            onClose()
-                        },
-                        onError: (e) => {
-                            alert(e)
-                        },
+                        onSettled: onClose,
                     }
                 )
             }

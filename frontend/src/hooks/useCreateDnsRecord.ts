@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { CreateDnsRecord, DomainResponse } from "../types/domain"
 import { toast } from "sonner"
@@ -16,10 +16,15 @@ const createDnsRecord = async (dnsRecordData: CreateDnsRecord): Promise<DomainRe
 }
 
 const useCreateDnsRecord = () => {
+    const queryClient = useQueryClient()
+
     return useMutation({
         mutationKey: ["create-dnsrecord"],
         mutationFn: createDnsRecord,
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["domains"],
+            })
             toast.success("Create dns record successful")
         },
         onError: () => {

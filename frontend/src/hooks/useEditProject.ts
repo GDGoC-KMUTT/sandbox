@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { ProjectResponse, EditProjectPayload } from "../types/project"
 import { toast } from "sonner"
@@ -16,10 +16,14 @@ const editProject = async (projectData: EditProjectPayload): Promise<ProjectResp
 }
 
 const useEditProject = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ["edit-project"],
         mutationFn: editProject,
         onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["projects"],
+            })
             toast.success("Edit project successful")
         },
         onError: () => {

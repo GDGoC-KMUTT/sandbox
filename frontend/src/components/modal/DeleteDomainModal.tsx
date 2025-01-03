@@ -19,13 +19,9 @@ const DeleteDomainModal: React.FC<IDeleteModal> = ({ onClose, domainId, projectI
                 domainId: domainId,
             },
             {
-                onSuccess: () => {
+                onSettled: () => {
                     onClose()
                     navigate(`/project/${projectId}`)
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
                 },
             }
         )

@@ -7,8 +7,10 @@ import useFetchProjectInfo from "../../../../../../hooks/useFetchProjectInfo"
 import ServerInfoCardLoading from "../../../../../../components/loader/ServerInfoCardLoading"
 import { ServerStackIcon, TrashIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
-import PageLoading from "../../../../../../components/loader/PageLoading"
+// import PageLoading from "../../../../../../components/loader/PageLoading"
 import DeleteServerModal from "../../../../../../components/modal/DeleteServerModal"
+import NotFound from "../../../../../../configs/pages/NotFound"
+import PageLoading from "../../../../../../components/loader/PageLoading"
 
 const Index = () => {
     const { project: projectId, server: serverId } = useParams()
@@ -17,7 +19,7 @@ const Index = () => {
     const [activeModal, setActiveModal] = useState(false)
     const projectIdNumber = parseInt(projectId || "", 10)
     if (projectId == null || isNaN(projectIdNumber)) {
-        return <div>Error: Invalid project ID</div>
+        return <NotFound />
     }
 
     const serverIdNumber = parseInt(projectId || "", 10)

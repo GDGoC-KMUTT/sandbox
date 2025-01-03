@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
 import { CreateServerPayload } from "../../types/server"
 import useCreateServer from "../../hooks/useCreateServer"
-import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export interface ICreateServerModal {
     onClose: () => void
@@ -20,7 +20,6 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
         memory: 2048,
         storage: 10,
     })
-    const queryClient = useQueryClient()
 
     const handleCreate = () => {
         if (
@@ -32,7 +31,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
             !server.memory ||
             server.memory < 1
         ) {
-            alert("Please fill in all fields correctly.")
+            toast.warning("Please fill in all fields correctly")
             return
         }
         createServer(
@@ -41,16 +40,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                 projectId: projectId,
             },
             {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["servers", projectId],
-                    })
-                    onClose()
-                },
-                onError: (e) => {
-                    alert(e)
-                    onClose()
-                },
+                onSettled: onClose,
             }
         )
     }
