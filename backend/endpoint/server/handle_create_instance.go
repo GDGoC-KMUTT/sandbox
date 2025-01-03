@@ -32,7 +32,7 @@ func (r *Handler) HandleCreateInstance(c *fiber.Ctx, config *payload.CreateIncus
 				"root": {
 					"path": "/",
 					"pool": "default",
-					"size": "1GB",
+					"size": "10GB",
 					"type": "disk",
 				},
 			},
