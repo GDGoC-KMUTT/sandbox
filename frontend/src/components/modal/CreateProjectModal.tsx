@@ -66,7 +66,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                             onChange={(e) => handleInputChange("domain", e.target.value)}
                             disabled={isPending}
                         ></input>
-                        <p className="text-lg">.scnn.me</p>
+                        <p className="text-lg">.scnd.space</p>
                     </div>
                 </div>
                 <div className="flex justify-end space-x-4">

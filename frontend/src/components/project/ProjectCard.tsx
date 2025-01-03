@@ -11,7 +11,7 @@ const ProjectCard: React.FC<Project> = ({ project_id, name, domain, users }) => 
         >
             <h4 className="text-xl">{name}</h4>
             <div className="flex gap-2">
-                <p>{domain}.scnn.me</p>
+                <p>{domain}.scnd.space</p>
             </div>
             <AvatarList users={users} />
         </div>

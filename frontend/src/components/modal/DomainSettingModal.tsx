@@ -112,7 +112,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                             onChange={(e) => handleInputChange("hostname", e.target.value)}
                             disabled={isAnyPending}
                         ></input>
-                        <p className="text-lg">.scnn.me</p>
+                        <p className="text-lg">.scnd.space</p>
                     </div>
                 </div>
                 <div className="mb-4">

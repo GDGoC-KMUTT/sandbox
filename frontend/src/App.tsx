@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 
-import { router } from "./configs/routes/routes"
+import { router } from "./configs/routes/routes.tsx"
 import { useAuthInit } from "./utils/authInit"
 import { useEffect } from "react"
 

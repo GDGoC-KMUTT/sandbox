@@ -161,7 +161,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                     onChange={(e) => setProjectDomain(e.target.value)}
                                     disabled={isEditProject}
                                 ></input>
-                                <p className="text-lg">.scnn.me</p>
+                                <p className="text-lg">.scnd.space</p>
                             </div>
                         </div>
                         <div className="flex justify-end space-x-4">

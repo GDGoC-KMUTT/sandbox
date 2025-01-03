@@ -1,5 +1,5 @@
 import React from "react"
-import { RouteObject } from "react-router-dom"
+import { Navigate, RouteObject } from "react-router-dom"
 import PrivateRoute from "./PrivateRoute"
 import NotFound from "../pages/NotFound"
 import Login from "../../pages/login/Login"
@@ -29,7 +29,8 @@ const routes: RouteObject[] = Object.keys(ROUTES)
 
 export const router = [
     ...routes,
-    { path: "/login", element: React.createElement(Login) },
-    { path: "/callback", element: React.createElement(Callback) },
-    { path: "*", element: React.createElement(NotFound) },
+    { path: "/", element: <Navigate to="/login" /> },
+    { path: "/login", element: <Login /> },
+    { path: "/callback", element: <Callback /> },
+    { path: "*", element: <NotFound /> },
 ]

@@ -29,7 +29,7 @@ func (r *Handler) HandleGenerateFile(c *fiber.Ctx) error {
 		}
 
 		// Now build the line since all required fields are non-nil
-		hostname := *domain.Project.Domain + "-" + *domain.Hostname + ".scnn.me"
+		hostname := *domain.Project.Domain + "-" + *domain.Hostname + ".scnd.space"
 		dnsType := "CNAME"
 		if domain.DNSType != nil {
 			dnsType = *domain.DNSType
