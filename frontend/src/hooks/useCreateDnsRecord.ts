@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { CreateDnsRecord, DomainResponse } from "../types/domain"
+import { toast } from "sonner"
 
 const createDnsRecord = async (dnsRecordData: CreateDnsRecord): Promise<DomainResponse> => {
     const response = await Axios.post(`/api/project/${dnsRecordData.projectId}/domain/create/dns`, {
@@ -18,11 +19,11 @@ const useCreateDnsRecord = () => {
     return useMutation({
         mutationKey: ["create-dnsrecord"],
         mutationFn: createDnsRecord,
-        onSuccess: (data) => {
-            console.log("Create dns record successful:", data)
+        onSuccess: () => {
+            toast.success("Create dns record successful")
         },
-        onError: (error) => {
-            console.error("Error creating dns record:", error)
+        onError: () => {
+            toast.error("Failed to create dns record")
         },
     })
 }

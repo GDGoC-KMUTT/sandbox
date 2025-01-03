@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
+import { toast } from "sonner"
 
 const sendCodeToCallback = async (code: string) => {
     const response = await Axios.post("/api/public/login/callback", { code })
@@ -13,11 +14,11 @@ const useAuthCallBack = () => {
     return useMutation({
         mutationKey: ["auth-callback"],
         mutationFn: sendCodeToCallback,
-        onError: (err) => {
-            console.error("Error in callback", err)
+        onError: () => {
+            toast.success("Callback success")
         },
-        onSuccess: (data) => {
-            console.log("Callback successful:", data)
+        onSuccess: () => {
+            toast.error("Callback error")
         },
     })
 }

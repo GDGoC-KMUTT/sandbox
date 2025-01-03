@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { ProjectResponse, EditProjectPayload } from "../types/project"
+import { toast } from "sonner"
 
 const editProject = async (projectData: EditProjectPayload): Promise<ProjectResponse> => {
     const response = await Axios.patch(`/api/project/edit`, {
@@ -18,11 +19,11 @@ const useEditProject = () => {
     return useMutation({
         mutationKey: ["edit-project"],
         mutationFn: editProject,
-        onSuccess: (data) => {
-            console.log("Edit project successful:", data)
+        onSuccess: () => {
+            toast.success("Edit project successful")
         },
-        onError: (error) => {
-            console.error("Error editing project:", error)
+        onError: () => {
+            toast.error("Failed to edit project")
         },
     })
 }

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { ServerResponse } from "../types/server"
+import { toast } from "sonner"
 
 const deleteServer = async ({ projectId, serverId }: { projectId: string; serverId: string }): Promise<ServerResponse> => {
     const response = await Axios.delete(`/api/project/${projectId}/server/${serverId}/delete`)
@@ -14,11 +15,11 @@ const useDeleteServer = () => {
     return useMutation({
         mutationKey: ["delete-server"],
         mutationFn: deleteServer,
-        onSuccess: (data) => {
-            console.log("Delete server successful:", data)
+        onSuccess: () => {
+            toast.success("Delete server successful")
         },
-        onError: (error) => {
-            console.error("Error deleting servef:", error)
+        onError: () => {
+            toast.error("Failed to delete server")
         },
     })
 }

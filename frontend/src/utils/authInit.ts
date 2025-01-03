@@ -6,7 +6,6 @@ import { Axios } from "../configs/axios/axiosInstance"
 
 const fetchUserData = async () => {
     const response = await Axios.get("/api/profile/info")
-    console.log(response.status)
     return response.data
 }
 
@@ -29,7 +28,6 @@ export const useAuthInit = () => {
                 setAuthState({ isAuthenticated: false, user: null, loading: false })
                 console.error("Error fetching user:", error)
             } else {
-                console.log(data)
                 setAuthState({
                     isAuthenticated: true,
                     user: data.data,

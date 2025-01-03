@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { ServerResponse } from "../types/server"
+import { toast } from "sonner"
 
 const deleteDomain = async ({ projectId, domainId }: { projectId: string; domainId: number }): Promise<ServerResponse> => {
     const response = await Axios.delete(`/api/project/${projectId}/domain/delete`, { data: { id: domainId } })
@@ -16,12 +17,12 @@ const useDeleteDomain = () => {
     return useMutation({
         mutationKey: ["delete-domain"],
         mutationFn: deleteDomain,
-        onSuccess: (data) => {
-            console.log("Delete domain successful:", data)
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["domains"] })
+            toast.success("Delete domain successful")
         },
-        onError: (error) => {
-            console.error("Error deleting domain:", error)
+        onError: () => {
+            toast.error("Failed to delete domain")
         },
     })
 }

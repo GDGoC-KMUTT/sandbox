@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { DomainResponse, EditWebProxy } from "../types/domain"
+import { toast } from "sonner"
 
 const editWebProxy = async (dnsRecordData: EditWebProxy): Promise<DomainResponse> => {
     const response = await Axios.patch(`/api/project/${dnsRecordData.projectId}/domain/edit/webproxy`, {
@@ -19,11 +20,11 @@ const useEditWebProxy = () => {
     return useMutation({
         mutationKey: ["edit-webproxy"],
         mutationFn: editWebProxy,
-        onSuccess: (data) => {
-            console.log("Edit dns record successful:", data)
+        onSuccess: () => {
+            toast.success("Edit web proxy successful")
         },
-        onError: (error) => {
-            console.error("Error editing dns record:", error)
+        onError: () => {
+            toast.error("Failed to edit web proxy")
         },
     })
 }

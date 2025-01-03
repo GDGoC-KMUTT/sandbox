@@ -83,11 +83,6 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
     }
 
     const handleEdit = () => {
-        console.log({
-            name: projectName,
-            domain: projectDomain,
-            project_id: projectIdNumber,
-        })
         editProject(
             {
                 name: projectName,

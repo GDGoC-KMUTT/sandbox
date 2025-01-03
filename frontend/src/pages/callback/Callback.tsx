@@ -19,7 +19,6 @@ function Callback() {
                 try {
                     const result = await mutateAsync(code)
                     if (result.data.user) {
-                        console.log(result.data.user)
                         login(result.data.user)
                     }
                     navigate("/project")

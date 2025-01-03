@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { AddUserPayload, ProjectResponse } from "../types/project"
+import { toast } from "sonner"
 
 const addUser = async (userData: AddUserPayload): Promise<ProjectResponse> => {
     const response = await Axios.post(`/api/project/adduser`, {
@@ -17,11 +18,11 @@ const useAddUser = () => {
     return useMutation({
         mutationKey: ["add-user"],
         mutationFn: addUser,
-        onSuccess: (data) => {
-            console.log("Add user successful:", data)
+        onSuccess: () => {
+            toast.success("Add user successful")
         },
-        onError: (error) => {
-            console.error("Error adding user:", error)
+        onError: () => {
+            toast.error("Failed to add user")
         },
     })
 }

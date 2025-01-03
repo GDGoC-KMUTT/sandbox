@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Axios } from "../configs/axios/axiosInstance"
 import { DeleteUserPayload, ProjectResponse } from "../types/project"
+import { toast } from "sonner"
 
 const deleteUser = async (userData: DeleteUserPayload): Promise<ProjectResponse> => {
     const response = await Axios.delete(`/api/project/deleteuser`, {
@@ -19,11 +20,11 @@ const useDeleteUser = () => {
     return useMutation({
         mutationKey: ["delete-user"],
         mutationFn: deleteUser,
-        onSuccess: (data) => {
-            console.log("Delete user successful:", data)
+        onSuccess: () => {
+            toast.success("Delete user from project successful")
         },
-        onError: (error) => {
-            console.error("Error deleting user:", error)
+        onError: () => {
+            toast.error("Failed to delete user from project")
         },
     })
 }
