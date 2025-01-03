@@ -17,7 +17,7 @@ const ServerCard: React.FC<PublicServer> = ({ id, hostname, ip, v_cpu, memory, s
             <div className="flex gap-2">
                 <ActiveStatus status={status == "Running" ? true : false} />
                 <p>
-                    {v_cpu} vCPU / {memory} GB RAM
+                    {v_cpu} vCPU / {memory} RAM
                 </p>
             </div>
             <div className={"flex justify-end"}>
