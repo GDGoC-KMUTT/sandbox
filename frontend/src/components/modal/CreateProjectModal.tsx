@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { DotLoading } from "../loader/DotLoading"
 import useCreateProject from "../../hooks/useCreateProject"
 import { CreateProjectPayload } from "../../types/project"
+import { toast } from "sonner"
 
 export interface CreateProjectModalProps {
     onClose: () => void
@@ -11,14 +12,35 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
     const { mutate: createProject, isPending } = useCreateProject()
     const [project, setProject] = useState<CreateProjectPayload>({ name: "", domain: "" })
 
-    const handleCreate = () => {
-        createProject({ name: project.name, domain: project.domain }, { onSettled: onClose })
-    }
     const handleInputChange = (key: string, value: string | number) => {
         setProject((prev) => ({
             ...prev,
             [key]: value,
         }))
+    }
+    const validateInputs = (): boolean => {
+        if (!project.name.trim()) {
+            toast.error("Project name is required.")
+            return false
+        }
+        if (project.name.length < 3) {
+            toast.error("Project name must be at least 3 characters long.")
+            return false
+        }
+        if (!project.domain.trim()) {
+            toast.error("Domain name is required.")
+            return false
+        }
+        if (!/^[a-zA-Z0-9-]+$/.test(project.domain)) {
+            toast.error("Domain name can only contain letters, numbers, and dashes.")
+            return false
+        }
+        return true
+    }
+    const handleCreate = () => {
+        if (validateInputs()) {
+            createProject({ name: project.name, domain: project.domain }, { onSettled: onClose })
+        }
     }
 
     return (

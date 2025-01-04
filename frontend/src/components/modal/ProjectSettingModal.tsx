@@ -37,29 +37,38 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
     if (projectId == null || isNaN(projectIdNumber)) {
         return <NotFound />
     }
-    const handleAddCollaborator = () => {
-        const emailExists = collaborators.some((collaborator) => collaborator.email === newCollaborator)
-        if (newCollaborator && !emailExists) {
-            addUser(
-                { email: newCollaborator, project_id: projectIdNumber },
-                {
-                    onSuccess: () => {
-                        queryClient.invalidateQueries({
-                            queryKey: ["projects", projectId],
-                        })
-                        refetch()
-                        refetchUsers()
-                        setCollaborators([...collaborators, { email: newCollaborator, photo_url: "" }]) // ! Will fix this, it should fetch photoUrl from addedUser
-                        setNewCollaborator("")
-                    },
-                    onError: () => {
-                        onClose()
-                    },
-                }
-            )
-        } else if (emailExists) {
-            toast.error("This user already existed in the project")
+    const validateCollaborator = () => {
+        if (!newCollaborator.trim()) {
+            toast.error("Collaborator email cannot be empty.")
+            return false
         }
+        const emailExists = collaborators.some((collaborator) => collaborator.email === newCollaborator)
+        if (emailExists) {
+            toast.error("This user already exists in the project.")
+            return false
+        }
+        return true
+    }
+    const handleAddCollaborator = () => {
+        if (!validateCollaborator()) return
+
+        addUser(
+            { email: newCollaborator, project_id: projectIdNumber },
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["projects", projectId],
+                    })
+                    refetch()
+                    refetchUsers()
+                    setCollaborators([...collaborators, { email: newCollaborator, photo_url: "" }]) // ! Will fix this, it should fetch photoUrl from addedUser
+                    setNewCollaborator("")
+                },
+                onError: () => {
+                    onClose()
+                },
+            }
+        )
     }
 
     const handleRemoveCollaborator = (collaborator: string) => {
@@ -81,8 +90,21 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
             }
         )
     }
+    const validateInputs = () => {
+        if (!projectName.trim()) {
+            toast.error("Project name cannot be empty.")
+            return false
+        }
+        if (!projectDomain.trim()) {
+            toast.error("Domain name cannot be empty.")
+            return false
+        }
+        return true
+    }
 
     const handleEdit = () => {
+        if (!validateInputs()) return
+
         editProject(
             {
                 name: projectName,
@@ -131,6 +153,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                 id="projectName"
                                 className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                                 value={projectName}
+                                maxLength={30}
                                 onChange={(e) => setProjectName(e.target.value)}
                                 disabled={isEditProject}
                             />
@@ -146,6 +169,7 @@ const ProjectSettingModal: React.FC<CreateProjectModalProps> = ({ onClose, proje
                                     value={projectDomain}
                                     onChange={(e) => setProjectDomain(e.target.value)}
                                     disabled={isEditProject}
+                                    maxLength={30}
                                 ></input>
                                 <p className="text-lg">.scnd.space</p>
                             </div>

@@ -27,7 +27,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
         hostname: domain.hostname || "",
         dnstype: domain.dnstype || "A",
         target: domain.target || "",
-        server_id: domain.server?.id || 0,
+        server_id: domain.server?.id || -1,
         port: domain.port || 0,
         service: domain.service || "",
     })
@@ -39,54 +39,74 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
             [key]: value,
         }))
     }
-
+    const validateInputs = (): boolean => {
+        if (!domainValue.hostname.trim()) {
+            toast.warning("Hostname is required.")
+            return false
+        }
+        if (domainValue.service === "DNS record") {
+            if (!domainValue.dnstype.trim()) {
+                toast.warning("DNS type is required.")
+                return false
+            }
+            if (!domainValue.target.trim()) {
+                toast.warning("Target is required for DNS record.")
+                return false
+            }
+        } else if (domainValue.service === "Web Proxy") {
+            if (domainValue.server_id === -1) {
+                toast.warning("Please select a server for Web Proxy.")
+                return false
+            }
+            if (domainValue.port === 0 || domainValue.port > 65535) {
+                toast.warning("Port must be between 1 and 65535.")
+                return false
+            }
+        } else {
+            toast.warning("Please select a service.")
+            return false
+        }
+        return true
+    }
     const handleCreate = () => {
+        if (!validateInputs()) return
+
         if (domainValue.service == "DNS record") {
-            if (!domainValue.hostname.trim() || !domainValue.dnstype.trim() || !domainValue.target.trim()) {
-                toast.warning("Please fill in all fields correctly.")
-                return
-            } else {
-                editDnsRecord(
-                    {
-                        id: domain.id,
-                        hostname: domainValue.hostname,
-                        dnstype: domainValue.dnstype,
-                        target: domainValue.target,
-                        projectId: projectId,
+            editDnsRecord(
+                {
+                    id: domain.id,
+                    hostname: domainValue.hostname,
+                    dnstype: domainValue.dnstype,
+                    target: domainValue.target,
+                    projectId: projectId,
+                },
+                {
+                    onSuccess: () => {
+                        queryClient.invalidateQueries({
+                            queryKey: ["domains", projectId],
+                        })
+                        onClose()
                     },
-                    {
-                        onSuccess: () => {
-                            queryClient.invalidateQueries({
-                                queryKey: ["domains", projectId],
-                            })
-                            onClose()
-                        },
-                    }
-                )
-            }
+                }
+            )
         } else if (domainValue.service == "Web Proxy") {
-            if (!domainValue.hostname.trim() || domainValue.server_id == 0 || domainValue.port == 0) {
-                toast.warning("Please fill in all fields correctly.")
-                return
-            } else {
-                editWebProxy(
-                    {
-                        id: domain.id,
-                        hostname: domainValue.hostname,
-                        server_id: domainValue.server_id,
-                        port: domainValue.port,
-                        projectId: projectId,
+            editWebProxy(
+                {
+                    id: domain.id,
+                    hostname: domainValue.hostname,
+                    server_id: domainValue.server_id,
+                    port: domainValue.port,
+                    projectId: projectId,
+                },
+                {
+                    onSuccess: () => {
+                        queryClient.invalidateQueries({
+                            queryKey: ["domains", projectId],
+                        })
+                        onClose()
                     },
-                    {
-                        onSuccess: () => {
-                            queryClient.invalidateQueries({
-                                queryKey: ["domains", projectId],
-                            })
-                            onClose()
-                        },
-                    }
-                )
-            }
+                }
+            )
         }
     }
 
@@ -104,6 +124,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                             id="hostname"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[70%] rounded-md border-2 focus:border-primary"
                             value={domainValue.hostname}
+                            maxLength={30}
                             onChange={(e) => handleInputChange("hostname", e.target.value)}
                             disabled={isAnyPending}
                         ></input>
@@ -183,7 +204,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                                     onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
                                     disabled={isFetchServersPending}
                                 >
-                                    <option value={0} disabled>
+                                    <option value={-1} disabled>
                                         Select a server
                                     </option>
                                     {servers?.data.map((server, index) => (
@@ -200,7 +221,7 @@ const DomainSettingModal: React.FC<IEditDomainModal> = ({ onClose, projectId, do
                                     onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
                                     disabled={isFetchServersPending}
                                 >
-                                    <option value={0} disabled>
+                                    <option value={-1} disabled>
                                         No available servers in project
                                     </option>{" "}
                                 </select>

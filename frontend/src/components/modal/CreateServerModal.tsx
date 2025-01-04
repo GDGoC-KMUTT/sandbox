@@ -21,19 +21,40 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
         storage: 10,
     })
 
-    const handleCreate = () => {
-        if (
-            !server.hostname.trim() ||
-            !server.username.trim() ||
-            !server.password.trim() ||
-            !server.os.trim() ||
-            !server.v_cpu ||
-            !server.memory ||
-            server.memory < 1
-        ) {
-            toast.warning("Please fill in all fields correctly")
-            return
+    const validateInput = () => {
+        if (!server.hostname.trim()) {
+            toast.warning("Hostname is required")
+            return false
         }
+        if (!server.username.trim()) {
+            toast.warning("Username is required")
+            return false
+        }
+        if (!server.password.trim()) {
+            toast.warning("Password is required")
+            return false
+        }
+        if (!server.os.trim()) {
+            toast.warning("Operating System selection is required")
+            return false
+        }
+        if (!server.v_cpu || server.v_cpu < 1) {
+            toast.warning("vCPU must be at least 1")
+            return false
+        }
+        if (!server.memory || server.memory < 1) {
+            toast.warning("Memory must be at least 1 MB")
+            return false
+        }
+        if (!server.storage || server.storage < 1) {
+            toast.warning("Storage must be at least 1 GB")
+            return false
+        }
+        return true
+    }
+    const handleCreate = () => {
+        if (!validateInput()) return
+
         createServer(
             {
                 ...server,
@@ -63,6 +84,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                     <input
                         type="text"
                         id="hostname"
+                        maxLength={30}
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.hostname}
                         onChange={(e) => handleInputChange("hostname", e.target.value)}
@@ -76,7 +98,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                     <input
                         type="text"
                         id="username"
-                        className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
+                        className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary cursor-not-allowed opacity-50"
                         value={server.username}
                         onChange={(e) => handleInputChange("username", e.target.value)}
                         disabled={true}
@@ -89,6 +111,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                     <input
                         type="password"
                         id="password"
+                        maxLength={30}
                         className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
                         value={server.password}
                         onChange={(e) => handleInputChange("password", e.target.value)}
@@ -103,7 +126,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         </label>
                         <select
                             id="os"
-                            className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
+                            className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary cursor-not-allowed opacity-50"
                             value={server.os}
                             onChange={(e) => handleInputChange("os", e.target.value)}
                             disabled={true}
@@ -120,7 +143,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         <input
                             type="number"
                             id="storage"
-                            className="mt-1 block h-[40px] w-full p-3 rounded-md border-2 focus:border-primary"
+                            className="mt-1 block h-[40px] w-full p-3 rounded-md border-2 focus:border-primary cursor-not-allowed opacity-50"
                             value={server.storage}
                             onChange={(e) => handleInputChange("storage", e.target.value)}
                             disabled={true}
@@ -134,7 +157,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         </label>
                         <select
                             id="v_cpu"
-                            className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary"
+                            className="mt-1 px-3 block h-[40px]  w-full rounded-md border-2 focus:border-primary cursor-not-allowed opacity-50"
                             value={server.v_cpu}
                             onChange={(e) => handleInputChange("v_cpu", e.target.value)}
                             disabled={true}
@@ -150,7 +173,7 @@ const CreateServerModal: React.FC<ICreateServerModal> = ({ onClose, projectId })
                         <input
                             type="number"
                             id="memory"
-                            className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary"
+                            className="mt-1 block h-[40px] p-3 w-full rounded-md border-2 focus:border-primary   cursor-not-allowed opacity-50"
                             value={server.memory}
                             onChange={(e) => handleInputChange("memory", e.target.value)}
                             disabled={true}

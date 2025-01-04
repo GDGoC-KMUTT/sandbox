@@ -21,7 +21,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
         hostname: "",
         dnstype: "A",
         target: "",
-        server_id: 0,
+        server_id: -1,
         port: 0,
         service: "dns",
     })
@@ -42,50 +42,64 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
             [key]: value,
         }))
     }
+    const validateInputs = (): boolean => {
+        if (!domain.hostname.trim()) {
+            toast.error("Hostname is required.")
+            return false
+        }
+
+        if (domain.service === "dns") {
+            if (!domain.dnstype.trim()) {
+                toast.error("DNS type is required.")
+                return false
+            }
+            if (!domain.target.trim()) {
+                toast.error("Target is required for DNS records.")
+                return false
+            }
+        }
+
+        if (domain.service === "webProxy") {
+            if (domain.server_id === -1) {
+                toast.error("Please select a valid server.")
+                return false
+            }
+            if (domain.port <= 0 || domain.port > 65535) {
+                toast.error("Port must be a number between 1 and 65535.")
+                return false
+            }
+        }
+
+        return true
+    }
 
     const handleCreate = () => {
+        if (!validateInputs()) return
+
         if (domain.service == "dns") {
-            if (!domain.hostname.trim() || !domain.dnstype.trim() || !domain.target.trim()) {
-                toast.warning("Please fill in all fields correctly")
-                return
-            } else {
-                createDnsRecord(
-                    {
-                        hostname: domain.hostname,
-                        dnstype: domain.dnstype,
-                        target: domain.target,
-                        projectId: projectId,
-                    },
-                    {
-                        onSettled: onClose,
-                    }
-                )
-            }
-        } else if (domain.service == "webProxy") {
-            if (!domain.hostname.trim() || domain.server_id == 0 || domain.port == 0) {
-                toast.warning("Please fill in all fields correctly")
-                return
-            } else {
-                const server_id = Number(domain.server_id)
-                const port = Number(domain.port)
-
-                if (isNaN(server_id) || isNaN(port)) {
-                    toast.warning("Invalid server or port")
-                    return
+            createDnsRecord(
+                {
+                    hostname: domain.hostname,
+                    dnstype: domain.dnstype,
+                    target: domain.target,
+                    projectId: projectId,
+                },
+                {
+                    onSettled: onClose,
                 }
-
-                createWebProxy(
-                    {
-                        hostname: domain.hostname,
-                        server_id,
-                        port,
-                        projectId: projectId,
-                    },
-                    {
-                        onSettled: onClose,
-                    }
-                )
-            }
+            )
+        } else if (domain.service == "webProxy") {
+            createWebProxy(
+                {
+                    hostname: domain.hostname,
+                    server_id: domain.server_id,
+                    port: domain.port,
+                    projectId: projectId,
+                },
+                {
+                    onSettled: onClose,
+                }
+            )
         }
     }
     return (
@@ -102,6 +116,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                             id="hostname"
                             className="mt-1 mr-2 block h-[40px] p-3 w-[70%] rounded-md border-2 focus:border-primary"
                             value={domain.hostname}
+                            maxLength={30}
                             onChange={(e) => handleInputChange("hostname", e.target.value)}
                             disabled={isAnyPending}
                         ></input>
@@ -179,7 +194,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                                     onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
                                     disabled={isFetchServersPending}
                                 >
-                                    <option value={0} disabled>
+                                    <option value={-1} disabled>
                                         Select a server
                                     </option>
                                     {servers.data.map((server, index) => (
@@ -196,7 +211,7 @@ const CreateDomainModal: React.FC<ICreateDomainModal> = ({ onClose, projectId })
                                     onChange={(e) => handleInputChange("server_id", Number(e.target.value))}
                                     disabled={isFetchServersPending}
                                 >
-                                    <option value={0} disabled>
+                                    <option value={-1} disabled>
                                         No available servers in project
                                     </option>{" "}
                                 </select>
