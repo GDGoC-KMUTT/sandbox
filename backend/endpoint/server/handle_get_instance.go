@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"sandbox-skeleton/type/payload"
 	"strconv"
+	"strings"
 
 	"github.com/bsthun/gut"
 	"github.com/gofiber/fiber/v2"
 )
 
 func (r *Handler) HandleGetInstance(c *fiber.Ctx, hostname string) (*payload.GetInstanceResponse, error) {
-
 	instanceDetails, _, err := r.incus.GetInstance(hostname)
 	if err != nil {
 		return nil, gut.Err(false, "instance not found", err)
@@ -30,7 +30,7 @@ func (r *Handler) HandleGetInstance(c *fiber.Ctx, hostname string) (*payload.Get
 	var ipAddress string
 	for _, addresses := range instanceState.Network {
 		for _, addr := range addresses.Addresses {
-			if addr.Family == "inet" && addr.Address != "127.0.0.1" {
+			if addr.Family == "inet" && addr.Address != "127.0.0.1" && strings.HasPrefix(addr.Address, "172.") {
 				ipAddress = addr.Address
 				break
 			}

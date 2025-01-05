@@ -8,6 +8,7 @@ import (
 	"io"
 	"sandbox-skeleton/type/payload"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -31,7 +32,7 @@ func (r *Handler) HandleCreateInstance(c *fiber.Ctx, config *payload.CreateIncus
 			Devices: map[string]map[string]string{
 				"root": {
 					"path": "/",
-					"pool": "default",
+					"pool": "pool1",
 					"size": "10GB",
 					"type": "disk",
 				},
@@ -92,7 +93,7 @@ func (r *Handler) HandleCreateInstance(c *fiber.Ctx, config *payload.CreateIncus
 	var ipAddress string
 	for _, addresses := range instanceState.Network {
 		for _, addr := range addresses.Addresses {
-			if addr.Family == "inet" && addr.Address != "127.0.0.1" {
+			if addr.Family == "inet" && addr.Address != "127.0.0.1" && strings.HasPrefix(addr.Address, "172.") {
 				ipAddress = addr.Address
 				break
 			}
