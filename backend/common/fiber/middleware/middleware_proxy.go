@@ -3,8 +3,10 @@ package middleware
 import (
 	"github.com/bsthun/gut"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/proxy"
+	"github.com/valyala/fasthttp"
+	"net"
 	"sandbox-skeleton/type/table"
+	"strconv"
 	"strings"
 )
 
@@ -67,8 +69,38 @@ func (r *Middleware) Proxy() fiber.Handler {
 			return c.SendStatus(500)
 		}
 
-		targetURL := "http://" + ipAddress + c.OriginalURL()
+		targetURL := "http://" + c.Hostname() + c.OriginalURL()
 
-		return proxy.Forward(targetURL)(c)
+		conn, err := net.Dial("tcp", ipAddress+":"+strconv.FormatUint(uint64(*domain.Port), 10))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("failed to forward request dial")
+		}
+
+		client := &fasthttp.Client{
+			Dial: func(addr string) (net.Conn, error) {
+				return conn, err
+			},
+		}
+
+		req := fasthttp.AcquireRequest()
+		defer fasthttp.ReleaseRequest(req)
+		c.Request().CopyTo(req)
+
+		req.SetRequestURI(targetURL)
+		req.Header.Set("Host", c.Hostname())
+		req.Header.Set("X-Forwarded-Host", c.Hostname())
+
+		resp := fasthttp.AcquireResponse()
+		defer fasthttp.ReleaseResponse(resp)
+
+		if err := client.Do(req, resp); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to forward request")
+		}
+
+		c.Response().SetStatusCode(resp.StatusCode())
+		resp.Header.CopyTo(&c.Response().Header)
+		c.Response().SetBodyRaw(resp.Body())
+
+		return nil
 	}
 }
