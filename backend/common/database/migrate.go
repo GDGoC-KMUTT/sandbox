@@ -14,6 +14,7 @@ func migrate(db *gorm.DB) {
 		new(table.Project),
 		new(table.Domain),
 		new(table.UserProject),
+		new(table.ProxyLog),
 	)
 	if err != nil {
 		gut.Fatal("unable to migrate database", err)

@@ -14,8 +14,11 @@ import (
 )
 
 func Bind(app *fiber.App, middleware *middleware.Middleware, sampleHandler *sampleEndpoint.Handler, publicHandler *publicEndpoint.Handler, profileHandler *profileEndpoint.Handler, projectHandler *projectEndpoint.Handler, serverHandler *serverEndpoint.Handler, domainHandler *domainEndpoint.Handler) {
+	// * middleware
+	app.Use(middleware.Cors())
+	app.Use(middleware.Proxy())
+
 	// * root
-	app.Use("/", middleware.Cors())
 	app.Get("/", HandleRoot)
 
 	// * api
