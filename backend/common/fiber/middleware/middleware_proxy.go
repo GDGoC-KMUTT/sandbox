@@ -4,6 +4,8 @@ import (
 	"github.com/bsthun/gut"
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
+	"io"
+	"mime/multipart"
 	"net"
 	"sandbox-skeleton/type/table"
 	"strconv"
@@ -84,11 +86,49 @@ func (r *Middleware) Proxy() fiber.Handler {
 
 		req := fasthttp.AcquireRequest()
 		defer fasthttp.ReleaseRequest(req)
-		c.Request().CopyTo(req)
 
 		req.SetRequestURI(targetURL)
+		req.Header.SetMethod(c.Method())
 		req.Header.Set("Host", c.Hostname())
 		req.Header.Set("X-Forwarded-Host", c.Hostname())
+
+		if c.Is("multipart/form-data") {
+			// Copy form fields and files for multipart data
+			form, err := c.MultipartForm()
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString("Failed to parse multipart form")
+			}
+			writer := multipart.NewWriter(req.BodyWriter())
+			for key, values := range form.Value {
+				for _, value := range values {
+					if err := writer.WriteField(key, value); err != nil {
+						return c.Status(fiber.StatusInternalServerError).SendString("Failed to write form field")
+					}
+				}
+			}
+			for key, files := range form.File {
+				for _, file := range files {
+					part, err := writer.CreateFormFile(key, file.Filename)
+					if err != nil {
+						return c.Status(fiber.StatusInternalServerError).SendString("Failed to write file part")
+					}
+					src, err := file.Open()
+					if err != nil {
+						return c.Status(fiber.StatusInternalServerError).SendString("Failed to open file")
+					}
+					defer src.Close()
+					if _, err := io.Copy(part, src); err != nil {
+						return c.Status(fiber.StatusInternalServerError).SendString("Failed to copy file data")
+					}
+				}
+			}
+			writer.Close()
+			req.Header.Set("Content-Type", writer.FormDataContentType())
+		} else {
+			// Copy raw body for other content types
+			req.SetBody(c.Body())
+			req.Header.SetContentTypeBytes(c.Request().Header.ContentType())
+		}
 
 		resp := fasthttp.AcquireResponse()
 		defer fasthttp.ReleaseResponse(resp)
@@ -97,6 +137,7 @@ func (r *Middleware) Proxy() fiber.Handler {
 			return c.Status(fiber.StatusInternalServerError).SendString("Failed to forward request")
 		}
 
+		// Forward the response back to the client
 		c.Response().SetStatusCode(resp.StatusCode())
 		resp.Header.CopyTo(&c.Response().Header)
 		c.Response().SetBodyRaw(resp.Body())
