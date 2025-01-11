@@ -89,8 +89,8 @@ func (r *Middleware) Proxy() fiber.Handler {
 
 		req.SetRequestURI(targetURL)
 		req.Header.SetMethod(c.Method())
-		req.Header.Set("Host", c.Hostname())
-		req.Header.Set("X-Forwarded-Host", c.Hostname())
+		req.Header.SetHost(c.Hostname())
+		c.Request().Header.CopyTo(&req.Header)
 
 		if c.Is("multipart/form-data") {
 			// Copy form fields and files for multipart data
@@ -138,8 +138,13 @@ func (r *Middleware) Proxy() fiber.Handler {
 		}
 
 		// Forward the response back to the client
-		c.Response().SetStatusCode(resp.StatusCode())
 		resp.Header.CopyTo(&c.Response().Header)
+		c.Set("Access-Control-Allow-Origin", c.Get("Origin"))
+		c.Set("Access-Control-Allow-Credentials", "true")
+		c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Request-With")
+		c.Set("X-SND-Proxy", "true")
+		c.Response().SetStatusCode(resp.StatusCode())
 		c.Response().SetBodyRaw(resp.Body())
 
 		return nil

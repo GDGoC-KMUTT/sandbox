@@ -17,7 +17,9 @@ func (r *Middleware) Cors() fiber.Handler {
 	}
 
 	c := cors.Config{
-		AllowOrigins:     origins,
+		AllowOriginsFunc: func(origin string) bool {
+			return true
+		},
 		AllowCredentials: true,
 	}
 
